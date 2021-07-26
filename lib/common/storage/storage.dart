@@ -50,7 +50,6 @@ class StorageService {
   void setWorkouts(List<Workout> workouts) {
     WorkoutDataV1 v1data = WorkoutDataV1(workouts: workouts);
     WorkoutData data = WorkoutData(version: 1, data: v1data.toJson());
-    print(data.toJson());
     _storage.setItem(
       _workoutDataKey,
       data.toJson(),

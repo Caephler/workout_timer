@@ -9,7 +9,7 @@ class ChoiceAction {
 
 Future<void> showChoiceDialog(
   BuildContext context, {
-  String title = 'Action',
+  String title = 'Actions',
   required Iterable<ChoiceAction> actions,
 }) {
   return showDialog(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:workout_timer/common/text.dart';
+import 'package:workout_timer/common/button.dart';
+import 'package:workout_timer/common/dialog/confirm_dialog.dart';
+import 'package:workout_timer/common/extensions.dart';
 import 'package:workout_timer/common/workouts.dart';
 import 'package:workout_timer/screens/edit_workout/components/workout_name_editor.dart';
 import 'package:workout_timer/screens/edit_workout/components/workout_sequence_editor.dart';
@@ -17,8 +19,16 @@ class EditWorkoutScreen extends StatelessWidget {
       create: (_) => WorkoutEditorCubit(workout: workout),
       child: WillPopScope(
         onWillPop: () async {
-          // TODO: Change this to ask user if they want to save or discard
-          return true;
+          return await showConfirmDialog(
+                context,
+                title: 'Exit',
+                description: 'Are you sure you want to discard your changes?',
+                okLabel: 'Discard',
+                okType: ButtonType.danger,
+                cancelLabel: 'No',
+                cancelType: ButtonType.text,
+              ) ??
+              false;
         },
         child: WorkoutScreenContent(),
       ),
@@ -33,89 +43,106 @@ class WorkoutScreenContent extends StatelessWidget {
         context.select((WorkoutEditorCubit cubit) => cubit.state.workout);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Container(
-          padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(child: WorkoutNameEditor()),
-                  SizedBox(width: 16.0),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context, workout);
-                    },
-                    child: Text('Save'),
-                  ),
-                ],
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(child: WorkoutNameEditor()),
+                    SizedBox(width: 16.0),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context, workout);
+                      },
+                      child: Text('Save'),
+                    ),
+                  ],
+                ),
               ),
               Expanded(
                 child: BlocBuilder<WorkoutEditorCubit, WorkoutEditorState>(
                   builder: (context, state) {
-                    return ListView.builder(
-                      itemCount: workout.sequences.length,
-                      itemBuilder: (_, index) {
-                        WorkoutSequence sequence = workout.sequences[index];
-                        return WorkoutSequenceEditor(
-                          key: ObjectKey(sequence.id),
-                          sequence: sequence,
-                          isActivated: state.activatedSequenceIndex == index,
-                          onUpdateSequence: ({required sequence}) {
-                            context
-                                .read<WorkoutEditorCubit>()
-                                .updateSequenceAt(index, sequence);
-                          },
-                          onUpdateBlock: ({
-                            required WorkoutBlock block,
-                            required int blockIndex,
-                          }) {
-                            context.read<WorkoutEditorCubit>().updateBlockAt(
-                                  sequenceIndex: index,
-                                  blockIndex: blockIndex,
-                                  block: block,
-                                );
-                          },
-                          removeBlockAt: (blockIndex) {
-                            context.read<WorkoutEditorCubit>().removeBlockAt(
-                                  sequenceIndex: index,
-                                  blockIndex: blockIndex,
-                                );
-                          },
-                          removeSelf: () {
-                            context
-                                .read<WorkoutEditorCubit>()
-                                .removeSequenceAt(index);
-                          },
-                          onActivate: () {
-                            context
-                                .read<WorkoutEditorCubit>()
-                                .activateSequence(index);
-                          },
-                          insertExerciseBefore: () {
-                            context
-                                .read<WorkoutEditorCubit>()
-                                .addSequenceAt(index);
-                          },
-                          insertExerciseAfter: () {
-                            context
-                                .read<WorkoutEditorCubit>()
-                                .addSequenceAt(index + 1);
-                          },
-                          insertLoopBefore: () {
-                            context
-                                .read<WorkoutEditorCubit>()
-                                .addSequenceAt(index, repeatTimes: 2);
-                          },
-                          insertLoopAfter: () {
-                            context
-                                .read<WorkoutEditorCubit>()
-                                .addSequenceAt(index + 1, repeatTimes: 2);
-                          },
-                        );
-                      },
+                    return Theme(
+                      data: ThemeData(
+                        canvasColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                      ),
+                      child: ReorderableListView.builder(
+                        padding: const EdgeInsets.all(16.0),
+                        itemCount: workout.sequences.length,
+                        onReorder: (oldIndex, newIndex) {
+                          if (oldIndex < newIndex) {
+                            newIndex -= 1;
+                          }
+                          List<WorkoutSequence> seqs = workout.sequences;
+                          final WorkoutSequence seq = seqs[oldIndex];
+                          List<WorkoutSequence> newSeqs = seqs
+                              .copyRemoveAt(oldIndex)
+                              .copyInsertAt(newIndex, seq);
+                          context.read<WorkoutEditorCubit>()
+                            ..updateWorkout(
+                              workout.copyWith(
+                                sequences: newSeqs,
+                              ),
+                            )
+                            ..deactivateSequence();
+                        },
+                        itemBuilder: (_, index) {
+                          WorkoutSequence sequence = workout.sequences[index];
+                          return WorkoutSequenceEditor(
+                            key: ObjectKey(sequence.id),
+                            sequence: sequence,
+                            isActivated: state.activatedSequenceIndex == index,
+                            onUpdateSequence: ({required sequence}) {
+                              context
+                                  .read<WorkoutEditorCubit>()
+                                  .updateSequenceAt(index, sequence);
+                            },
+                            onUpdateBlock: ({
+                              required WorkoutBlock block,
+                              required int blockIndex,
+                            }) {
+                              context.read<WorkoutEditorCubit>().updateBlockAt(
+                                    sequenceIndex: index,
+                                    blockIndex: blockIndex,
+                                    block: block,
+                                  );
+                            },
+                            removeBlockAt: (blockIndex) {
+                              context.read<WorkoutEditorCubit>().removeBlockAt(
+                                    sequenceIndex: index,
+                                    blockIndex: blockIndex,
+                                  );
+                            },
+                            removeSelf: () {
+                              context
+                                  .read<WorkoutEditorCubit>()
+                                  .removeSequenceAt(index);
+                            },
+                            onActivate: () {
+                              context
+                                  .read<WorkoutEditorCubit>()
+                                  .activateSequence(index);
+                            },
+                            insertExerciseAfter: () {
+                              context
+                                  .read<WorkoutEditorCubit>()
+                                  .addSequenceAt(index + 1);
+                            },
+                            insertLoopAfter: () {
+                              context
+                                  .read<WorkoutEditorCubit>()
+                                  .addSequenceAt(index + 1, repeatTimes: 2);
+                            },
+                          );
+                        },
+                      ),
                     );
                   },
                 ),

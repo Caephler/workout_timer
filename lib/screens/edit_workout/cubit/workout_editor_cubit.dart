@@ -9,12 +9,11 @@ class WorkoutEditorCubit extends Cubit<WorkoutEditorState> {
   WorkoutEditorCubit({Workout? workout})
       : super(WorkoutEditorState(workout: workout ?? Workout.empty()));
 
-  void updateWorkout({String? name}) {
+  void updateWorkout(Workout workout) {
     emit(
-      state.copyWith(
-        workout: state.workout.copyWith(
-          name: name,
-        ),
+      WorkoutEditorState(
+        workout: workout,
+        activatedSequenceIndex: state.activatedSequenceIndex,
       ),
     );
   }
@@ -22,7 +21,7 @@ class WorkoutEditorCubit extends Cubit<WorkoutEditorState> {
   /// Add a WorkoutSequence at the specified index.
   void addSequenceAt(int index, {int repeatTimes = 1}) {
     emit(
-      state.copyWith(
+      WorkoutEditorState(
         activatedSequenceIndex: index,
         workout: state.workout.copyWith(
           sequences: state.workout.sequences.copyInsertAt(
@@ -33,7 +32,7 @@ class WorkoutEditorCubit extends Cubit<WorkoutEditorState> {
                 WorkoutBlock(
                   name: 'Workout',
                   type: WorkoutType.Workout,
-                  duration: Duration(seconds: 30),
+                  duration: Duration(seconds: 60),
                 ),
               ],
             ),
@@ -46,7 +45,7 @@ class WorkoutEditorCubit extends Cubit<WorkoutEditorState> {
   /// Removes a WorkoutSequence at the specified index
   void removeSequenceAt(int index) {
     emit(
-      state.copyWith(
+      WorkoutEditorState(
         activatedSequenceIndex: null,
         workout: state.workout.copyWith(
           sequences: state.workout.sequences.copyRemoveAt(index),
@@ -60,7 +59,8 @@ class WorkoutEditorCubit extends Cubit<WorkoutEditorState> {
     WorkoutSequence sequence,
   ) {
     emit(
-      state.copyWith(
+      WorkoutEditorState(
+        activatedSequenceIndex: state.activatedSequenceIndex,
         workout: state.workout.copyWith(
           sequences: state.workout.sequences.copyUpdateAt(
             index,
@@ -74,7 +74,7 @@ class WorkoutEditorCubit extends Cubit<WorkoutEditorState> {
   void addBlockAt({required int sequenceIndex, required int blockIndex}) {
     WorkoutSequence seq = state.workout.sequences[sequenceIndex];
     emit(
-      state.copyWith(
+      WorkoutEditorState(
         activatedSequenceIndex: sequenceIndex,
         workout: state.workout.copyWith(
           sequences: state.workout.sequences.copyInsertAt(
@@ -102,7 +102,7 @@ class WorkoutEditorCubit extends Cubit<WorkoutEditorState> {
     List<WorkoutBlock> blocks = seq.blocks.copyRemoveAt(blockIndex);
 
     emit(
-      state.copyWith(
+      WorkoutEditorState(
         activatedSequenceIndex: null,
         workout: state.workout.copyWith(
           sequences: blocks.isEmpty
@@ -124,7 +124,7 @@ class WorkoutEditorCubit extends Cubit<WorkoutEditorState> {
     required WorkoutBlock block,
   }) {
     emit(
-      state.copyWith(
+      WorkoutEditorState(
         activatedSequenceIndex: sequenceIndex,
         workout: state.workout.copyWith(
           sequences: state.workout.sequences.copyUpdateAt(
@@ -143,13 +143,19 @@ class WorkoutEditorCubit extends Cubit<WorkoutEditorState> {
 
   void activateSequence(int sequenceIndex) {
     emit(
-      state.copyWith(activatedSequenceIndex: sequenceIndex),
+      WorkoutEditorState(
+        activatedSequenceIndex: sequenceIndex,
+        workout: state.workout,
+      ),
     );
   }
 
   void deactivateSequence() {
     emit(
-      state.copyWith(activatedSequenceIndex: null),
+      WorkoutEditorState(
+        activatedSequenceIndex: null,
+        workout: state.workout,
+      ),
     );
   }
 }

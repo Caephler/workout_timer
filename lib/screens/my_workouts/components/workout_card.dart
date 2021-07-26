@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icons.dart';
+import 'package:workout_timer/common/circle_elevated_button.dart';
 import 'package:workout_timer/common/dialog/choice_dialog.dart';
 import 'package:workout_timer/common/format.dart';
 import 'package:workout_timer/common/text.dart';
@@ -7,21 +9,24 @@ import 'workout_preview.dart';
 
 class WorkoutCard extends StatelessWidget {
   const WorkoutCard({
+    Key? key,
     required this.workout,
     required this.onStartWorkout,
     required this.onEditWorkout,
     required this.onDeleteWorkout,
-  });
+    required this.index,
+  }) : super(key: key);
 
   final Workout workout;
   final void Function(Workout workout) onStartWorkout;
   final void Function(Workout workout) onEditWorkout;
   final void Function() onDeleteWorkout;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 8.0),
+      padding: const EdgeInsets.only(bottom: 8.0),
       child: GestureDetector(
         onLongPress: () {
           showChoiceDialog(
@@ -45,42 +50,39 @@ class WorkoutCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  ReorderableDragStartListener(
+                    child: Icon(LineIcons.gripLines),
+                    index: index,
+                  ),
+                  SizedBox(width: 8.0),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           workout.name,
-                          style: AppTextStyles.display.getStyleFor(4).copyWith(
-                                fontWeight: FontWeight.w600,
+                          style: AppTextStyles.display
+                              .getStyleFor(4, weight: TextWeight.Bold)
+                              .copyWith(
                                 color: Colors.blue,
                               ),
                           maxLines: 3,
                         ),
                         Text(
-                          formatDuration(workout.totalDuration),
-                          style: AppTextStyles.body.getStyleFor(5),
+                          formatWorkoutDuration(workout.totalDuration),
+                          style: AppTextStyles.body.getStyleFor(5).copyWith(
+                                color: Colors.black54,
+                              ),
                         ),
                       ],
                     ),
                   ),
                   SizedBox(width: 32.0),
-                  ElevatedButtonTheme(
-                    data: ElevatedButtonThemeData(
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        minimumSize: Size(36, 36),
-                      ),
-                    ),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        onStartWorkout(workout);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: CircleBorder(),
-                      ),
-                      child: Icon(Icons.play_arrow),
-                    ),
+                  CircleElevatedButton(
+                    onPressed: () {
+                      onStartWorkout(workout);
+                    },
+                    child: Icon(Icons.play_arrow),
                   )
                 ],
               ),

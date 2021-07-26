@@ -15,7 +15,22 @@ String formatDuration(Duration duration) {
 
   String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
 
-  result += '${twoDigitSeconds}';
+  result += twoDigitSeconds;
 
   return result;
+}
+
+/// Special formatting for duration
+/// Up to 90s - display as seconds
+/// After 90s, display as minutes
+String formatWorkoutDuration(Duration duration) {
+  int seconds = duration.inSeconds;
+  if (seconds <= 90) {
+    return '${seconds}s';
+  }
+
+  int leftSeconds = seconds.remainder(60);
+  int minutes = duration.inMinutes;
+
+  return '${minutes}m ${leftSeconds}s';
 }

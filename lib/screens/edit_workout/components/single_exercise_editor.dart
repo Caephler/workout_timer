@@ -12,17 +12,20 @@ class SingleExerciseEditor extends StatefulWidget {
     required this.block,
     required this.isEditing,
     required this.updateBlock,
+    required this.removeBlock,
   }) : super(key: key);
 
   final WorkoutBlock block;
   final bool isEditing;
   final void Function(WorkoutBlock block) updateBlock;
+  final VoidCallback removeBlock;
 
   @override
   _SingleExerciseEditorState createState() => _SingleExerciseEditorState();
 }
 
-class _SingleExerciseEditorState extends State<SingleExerciseEditor> {
+class _SingleExerciseEditorState extends State<SingleExerciseEditor>
+    with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
@@ -46,7 +49,7 @@ class _SingleExerciseEditorState extends State<SingleExerciseEditor> {
         SizedBox(width: 32.0),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(formatDuration(widget.block.duration)),
+          child: Text(formatWorkoutDuration(widget.block.duration)),
         ),
       ],
     );
@@ -56,8 +59,9 @@ class _SingleExerciseEditorState extends State<SingleExerciseEditor> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Flexible(
+        Expanded(
           child: InkwellButton(
+            hasBorder: true,
             onTap: () {
               showInputDialog(
                 context,
@@ -72,29 +76,34 @@ class _SingleExerciseEditorState extends State<SingleExerciseEditor> {
             },
             child: Text(
               widget.block.name,
-              style: AppTextStyles.body.getStyleFor(5).copyWith(
-                    color: Colors.blue,
-                  ),
+              overflow: TextOverflow.ellipsis,
+              style: AppTextStyles.body.getStyleFor(5),
               textAlign: TextAlign.left,
             ),
           ),
         ),
         SizedBox(width: 32.0),
-        TextButton(
-          onPressed: () {
-            showDurationDialog(
-              context,
-              title: 'Workout Duration',
-              initialValue: widget.block.duration,
-              onOk: (newValue) {
-                widget.updateBlock(
-                  widget.block.copyWith(duration: newValue),
-                );
-              },
-            );
-          },
-          child: Text(
-            formatDuration(widget.block.duration),
+        SizedBox(
+          width: 96.0,
+          child: InkwellButton(
+            hasBorder: true,
+            onTap: () {
+              showDurationDialog(
+                context,
+                title: 'Workout Duration',
+                initialValue: widget.block.duration,
+                onOk: (newValue) {
+                  widget.updateBlock(
+                    widget.block.copyWith(duration: newValue),
+                  );
+                },
+              );
+            },
+            child: Text(
+              formatWorkoutDuration(widget.block.duration),
+              textAlign: TextAlign.right,
+              style: AppTextStyles.body.getStyleFor(5),
+            ),
           ),
         ),
       ],
@@ -103,11 +112,21 @@ class _SingleExerciseEditorState extends State<SingleExerciseEditor> {
 
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        minHeight: 48.0,
+    return Dismissible(
+      key: ObjectKey(widget.block.id),
+      direction: DismissDirection.startToEnd,
+      onDismissed: (direction) {
+        widget.removeBlock();
+      },
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          minHeight: 48.0,
+        ),
+        child: Container(
+          color: Colors.white,
+          child: widget.isEditing ? _buildEditingWidget() : _buildViewWidget(),
+        ),
       ),
-      child: widget.isEditing ? _buildEditingWidget() : _buildViewWidget(),
     );
   }
 }

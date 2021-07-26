@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+enum TextWeight { Light, Regular, Bold, ExtraBold }
+
 class TextStyleSet {
   const TextStyleSet({
     required this.baseTextStyle,
@@ -9,12 +11,26 @@ class TextStyleSet {
   final TextStyle baseTextStyle;
   final List<double> sizes;
 
-  TextStyle getStyleFor(int size) {
+  FontWeight getWeight(TextWeight weight) {
+    switch (weight) {
+      case TextWeight.Light:
+        return FontWeight.w300;
+      case TextWeight.Regular:
+        return FontWeight.normal;
+      case TextWeight.Bold:
+        return FontWeight.bold;
+      case TextWeight.ExtraBold:
+        return FontWeight.w900;
+    }
+  }
+
+  TextStyle getStyleFor(int size, {TextWeight weight = TextWeight.Regular}) {
     assert(size >= 0);
     assert(size < sizes.length);
 
     return baseTextStyle.copyWith(
       fontSize: sizes[size].toDouble(),
+      fontWeight: getWeight(weight),
     );
   }
 }

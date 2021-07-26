@@ -29,6 +29,7 @@ class WorkoutSequenceSection extends StatelessWidget {
   Widget _renderSingleBlock() {
     return WorkoutBlockSection(
       workoutBlock: this.workoutSequence.blocks.first,
+      padHorizontal: true,
     );
   }
 
@@ -41,7 +42,7 @@ class WorkoutSequenceSection extends StatelessWidget {
             color: Colors.blue,
             width: 2,
           ),
-          borderRadius: BorderRadius.circular(16.0),
+          borderRadius: BorderRadius.circular(8.0),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,7 +73,9 @@ class WorkoutSequenceSection extends StatelessWidget {
                   const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
               child: Column(
                 children: workoutSequence.blocks
-                    .map((block) => WorkoutBlockSection(workoutBlock: block))
+                    .map(
+                      (block) => WorkoutBlockSection(workoutBlock: block),
+                    )
                     .toList(),
               ),
             )
@@ -93,27 +96,40 @@ class WorkoutSequenceSection extends StatelessWidget {
 }
 
 class WorkoutBlockSection extends StatelessWidget {
-  const WorkoutBlockSection({required this.workoutBlock});
+  const WorkoutBlockSection({
+    required this.workoutBlock,
+    this.padHorizontal = false,
+  });
 
   final WorkoutBlock workoutBlock;
+  final bool padHorizontal;
 
   @override
   Widget build(BuildContext context) {
     Duration duration = workoutBlock.duration;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: EdgeInsets.symmetric(
+        vertical: 8.0,
+        horizontal: padHorizontal ? 16.0 : 0.0,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
             child: Text(
               workoutBlock.name,
               overflow: TextOverflow.ellipsis,
+              style: AppTextStyles.body.getStyleFor(5),
+              maxLines: 2,
             ),
           ),
-          SizedBox(width: 16.0),
-          Text(formatDuration(duration)),
+          SizedBox(width: 32.0),
+          Text(
+            formatWorkoutDuration(duration),
+            style: AppTextStyles.body.getStyleFor(5),
+          ),
         ],
       ),
     );

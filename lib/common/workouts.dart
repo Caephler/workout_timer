@@ -20,8 +20,24 @@ class Workout {
     required this.sequences,
   }) : this.id = id ?? UuidService.v4();
 
-  static Workout empty({String name = 'My Workout'}) {
+  factory Workout.empty({String name = 'My Workout'}) {
     return Workout(name: name, sequences: []);
+  }
+
+  /// Creates a simple workout with a default body
+  factory Workout.simple({String name = 'My Workout'}) {
+    return Workout(
+      name: name,
+      sequences: [
+        WorkoutSequence.only(
+          WorkoutBlock(
+            name: 'Workout',
+            type: WorkoutType.Workout,
+            duration: Duration(minutes: 1),
+          ),
+        ),
+      ],
+    );
   }
 
   Duration get totalDuration {
@@ -67,6 +83,11 @@ class WorkoutSequence {
     this.repeatTimes = 1,
     required this.blocks,
   }) : this.id = id ?? UuidService.v4();
+
+  /// Create a workout sequence with repeat times = 1 and with only 1 block
+  factory WorkoutSequence.only(WorkoutBlock block) {
+    return WorkoutSequence(blocks: [block], repeatTimes: 1);
+  }
 
   Duration get totalDuration {
     return blocks.foldRight<Duration>(

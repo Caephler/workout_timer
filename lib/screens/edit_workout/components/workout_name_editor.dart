@@ -13,6 +13,7 @@ class WorkoutNameEditor extends StatelessWidget {
     Workout workout =
         context.select((WorkoutEditorCubit cubit) => cubit.state.workout);
     return InkwellButton(
+      hasBorder: true,
       onTap: () {
         WorkoutEditorCubit cubit = context.read<WorkoutEditorCubit>();
         showInputDialog(
@@ -20,7 +21,9 @@ class WorkoutNameEditor extends StatelessWidget {
           title: 'Workout Name',
           defaultValue: cubit.state.workout.name,
           onOk: (newName) {
-            cubit.updateWorkout(name: newName);
+            cubit.updateWorkout(
+              cubit.state.workout.copyWith(name: newName),
+            );
           },
           validators: [
             createLengthValidator(
@@ -28,12 +31,10 @@ class WorkoutNameEditor extends StatelessWidget {
           ],
         );
       },
-      child: Flexible(
-        child: Text(
-          workout.name,
-          style: AppTextStyles.display.getStyleFor(4),
-          maxLines: 2,
-        ),
+      child: Text(
+        workout.name,
+        style: AppTextStyles.display.getStyleFor(4, weight: TextWeight.Bold),
+        maxLines: 2,
       ),
     );
   }
