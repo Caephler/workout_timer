@@ -8,6 +8,19 @@ import 'package:workout_timer/common/workouts.dart';
 import 'package:workout_timer/screens/edit_workout/cubit/workout_editor_cubit.dart';
 
 class WorkoutNameEditor extends StatelessWidget {
+  Widget _flightShuttleBuilder(
+    BuildContext flightContext,
+    Animation<double> animation,
+    HeroFlightDirection flightDirection,
+    BuildContext fromHeroContext,
+    BuildContext toHeroContext,
+  ) {
+    return DefaultTextStyle(
+      style: DefaultTextStyle.of(toHeroContext).style,
+      child: toHeroContext.widget,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Workout workout =
@@ -27,14 +40,18 @@ class WorkoutNameEditor extends StatelessWidget {
           },
           validators: [
             createLengthValidator(
-                0, 40, 'Your workout name must have at most 40 characters.'),
+                1, 40, 'Your workout name must have at most 40 characters.'),
           ],
         );
       },
-      child: Text(
-        workout.name,
-        style: AppTextStyles.display.getStyleFor(4, weight: TextWeight.Bold),
-        maxLines: 2,
+      child: Hero(
+        tag: 'workout_${workout.id}',
+        flightShuttleBuilder: _flightShuttleBuilder,
+        child: Text(
+          workout.name,
+          style: AppTextStyles.display.getStyleFor(4),
+          maxLines: 2,
+        ),
       ),
     );
   }

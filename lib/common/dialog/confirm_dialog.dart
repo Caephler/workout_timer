@@ -41,6 +41,8 @@ Future<bool?> showConfirmDialog(
     builder: (context) => new AlertDialog(
       title: Text(title),
       content: Text(description),
+      actionsPadding:
+          const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 12.0),
       actions: [
         _getButtonWith(
           onPressed: () {

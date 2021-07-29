@@ -8,21 +8,25 @@ class WorkoutCompleteScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(24.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              SizedBox(
+                height: 300,
+                child: Image.asset('images/yay.png'),
+              ),
               Text(
                 'Yay!',
-                style: AppTextStyles.display.getStyleFor(1).copyWith(
-                      fontWeight: FontWeight.w900,
-                      color: Colors.blue,
-                    ),
+                style: AppTextStyles.display.getStyleFor(1, color: Colors.blue),
               ),
+              SizedBox(height: 16.0),
               Text(
                 "You've completed your workout! You deserve a pat on the back :)",
+                style: AppTextStyles.body.getStyleFor(5, color: Colors.black87),
               ),
+              SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () {
                   Navigator.pushAndRemoveUntil(
@@ -33,7 +37,8 @@ class WorkoutCompleteScreen extends StatelessWidget {
                     (route) => false,
                   );
                 },
-                child: Text('To My Workouts'),
+                child: Text('To My Workouts',
+                    style: AppTextStyles.body.getStyleFor(5)),
               ),
             ],
           ),

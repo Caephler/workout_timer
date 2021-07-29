@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:workout_timer/common/storage/storage.dart';
 
 class LocalStorageProvider<T> extends StatelessWidget {
-  LocalStorageProvider({required this.builder, required this.getter});
+  LocalStorageProvider({
+    required this.builder,
+    required this.getter,
+  });
 
   final Widget Function(bool isReady, T? value) builder;
   final T Function(StorageService storage) getter;

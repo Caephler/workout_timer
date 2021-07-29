@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:workout_timer/common/text.dart';
 
 class ChoiceAction {
   final String text;
@@ -24,7 +25,10 @@ Future<void> showChoiceDialog(
                   Navigator.pop(context);
                   action.callback();
                 },
-                child: Text(action.text),
+                child: Text(
+                  action.text,
+                  style: AppTextStyles.body.getStyleFor(5),
+                ),
               ),
             )
             .toList(),

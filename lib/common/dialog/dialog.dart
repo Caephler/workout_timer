@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:workout_timer/common/button.dart';
 import 'package:workout_timer/common/validators.dart';
 
 Future<void> showDialogOf<T>(
@@ -14,6 +15,10 @@ Future<void> showDialogOf<T>(
   void Function(T value)? onOk,
   void Function()? onCancel,
   Iterable<Validator<T>>? validators,
+  ButtonType okType = ButtonType.primary,
+  ButtonType cancelType = ButtonType.text,
+  String okLabel = 'OK',
+  String cancelLabel = 'Cancel',
 }) async {
   showDialog(
     context: context,
@@ -26,6 +31,10 @@ Future<void> showDialogOf<T>(
         onCancel: onCancel,
         validators: validators,
         buildContent: buildContent,
+        okType: okType,
+        cancelType: cancelType,
+        okLabel: okLabel,
+        cancelLabel: cancelLabel,
       );
     },
   );
@@ -42,6 +51,10 @@ class _GenericDialog<T> extends SimpleDialog {
     required Widget Function(
             FormFieldState<T> context, void Function() commitChange)
         buildContent,
+    ButtonType okType = ButtonType.text,
+    ButtonType cancelType = ButtonType.text,
+    String okLabel = 'OK',
+    String cancelLabel = 'Cancel',
   }) : super(
           title: Text(title),
           children: [
@@ -52,6 +65,10 @@ class _GenericDialog<T> extends SimpleDialog {
               validators: validators,
               buildContent: buildContent,
               helpText: helpText,
+              okType: okType,
+              cancelType: cancelType,
+              okLabel: okLabel,
+              cancelLabel: cancelLabel,
             ),
           ],
         );
@@ -65,6 +82,10 @@ class _GenericDialogContent<T> extends StatefulWidget {
     this.validators,
     this.helpText,
     required this.buildContent,
+    required this.okType,
+    required this.cancelType,
+    required this.okLabel,
+    required this.cancelLabel,
   });
 
   final T defaultValue;
@@ -74,6 +95,10 @@ class _GenericDialogContent<T> extends StatefulWidget {
   final Iterable<Validator<T>>? validators;
   final Widget Function(FormFieldState<T> context, void Function() commitChange)
       buildContent;
+  final ButtonType okType;
+  final ButtonType cancelType;
+  final okLabel;
+  final cancelLabel;
 
   @override
   _GenericDialogContentState<T> createState() =>
@@ -131,22 +156,25 @@ class _GenericDialogContentState<T> extends State<_GenericDialogContent<T>> {
               },
             ),
           ),
+          SizedBox(height: 16.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              TextButton(
+              _getButtonWith(
                 onPressed: () {
                   widget.onCancel?.call();
                   Navigator.pop(context);
                 },
-                child: Text('Cancel'),
+                child: Text(widget.cancelLabel),
+                type: widget.cancelType,
               ),
               SizedBox(width: 16.0),
-              TextButton(
+              _getButtonWith(
                 onPressed: () {
                   _commitChange();
                 },
-                child: Text('OK'),
+                child: Text(widget.okLabel),
+                type: widget.okType,
               ),
             ],
           )
@@ -154,4 +182,27 @@ class _GenericDialogContentState<T> extends State<_GenericDialogContent<T>> {
       ),
     );
   }
+}
+
+Widget _getButtonWith({
+  required Widget child,
+  VoidCallback? onPressed,
+  required ButtonType type,
+}) {
+  if (type != ButtonType.text) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      child: child,
+      style: ElevatedButton.styleFrom(
+        primary: type == ButtonType.primary
+            ? Colors.blue
+            : type == ButtonType.warning
+                ? Colors.amber
+                : type == ButtonType.danger
+                    ? Colors.red
+                    : Colors.blue,
+      ),
+    );
+  }
+  return TextButton(onPressed: onPressed, child: child);
 }

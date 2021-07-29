@@ -63,8 +63,8 @@ class WorkoutSequenceSection extends StatelessWidget {
                 ),
                 child: Text(
                   'x${workoutSequence.repeatTimes}',
-                  style: AppTextStyles.display.getStyleFor(5).copyWith(
-                      fontWeight: FontWeight.bold, color: Colors.white),
+                  style:
+                      AppTextStyles.display.getStyleFor(5, color: Colors.white),
                 ),
               ),
             ),
@@ -127,7 +127,9 @@ class WorkoutBlockSection extends StatelessWidget {
           ),
           SizedBox(width: 32.0),
           Text(
-            formatWorkoutDuration(duration),
+            workoutBlock.type == WorkoutType.Time
+                ? formatWorkoutDuration(duration)
+                : '${workoutBlock.reps} reps',
             style: AppTextStyles.body.getStyleFor(5),
           ),
         ],

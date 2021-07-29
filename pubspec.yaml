@@ -23,6 +23,7 @@ dependencies:
   json_annotation: ^4.1.0
   json_serializable: ^5.0.0
   line_icons: ^2.0.1
+  shared_preferences: ^2.0.6
 
 dev_dependencies:
   build_runner:
@@ -35,23 +36,14 @@ flutter:
     - assets/
 
   fonts:
-    - family: Manrope
+    - family: Rubik
       fonts:
-        - asset: fonts/manrope/Manrope-Bold.ttf
-        - asset: fonts/manrope/Manrope-ExtraBold.ttf
-        - asset: fonts/manrope/Manrope-ExtraLight.ttf
-        - asset: fonts/manrope/Manrope-Light.ttf
-        - asset: fonts/manrope/Manrope-Medium.ttf
-        - asset: fonts/manrope/Manrope-Regular.ttf
-        - asset: fonts/manrope/Manrope-SemiBold.ttf
+        - asset: fonts/rubik/Rubik-SemiBold.ttf
+        - asset: fonts/rubik/Rubik-Medium.ttf
+        - asset: fonts/rubik/Rubik-ExtraBold.ttf
+        - asset: fonts/rubik/Rubik-Regular.ttf
     - family: Inter
       fonts:
-        - asset: fonts/inter/Inter-Black.ttf
-        - asset: fonts/inter/Inter-Bold.ttf
-        - asset: fonts/inter/Inter-ExtraBold.ttf
-        - asset: fonts/inter/Inter-ExtraLight.ttf
-        - asset: fonts/inter/Inter-Light.ttf
-        - asset: fonts/inter/Inter-Medium.ttf
-        - asset: fonts/inter/Inter-Regular.ttf
         - asset: fonts/inter/Inter-SemiBold.ttf
-        - asset: fonts/inter/Inter-Thin.ttf
+        - asset: fonts/inter/Inter-ExtraBold.ttf
+        - asset: fonts/inter/Inter-Regular.ttf

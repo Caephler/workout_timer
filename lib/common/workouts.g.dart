@@ -49,7 +49,9 @@ Map<String, dynamic> _$WorkoutSequenceToJson(WorkoutSequence instance) =>
 WorkoutBlock _$WorkoutBlockFromJson(Map<String, dynamic> json) => WorkoutBlock(
       name: json['name'] as String,
       type: _$enumDecode(_$WorkoutTypeEnumMap, json['type']),
-      duration: Duration(microseconds: json['duration'] as int),
+      duration:
+          Duration(microseconds: json['duration'] as int) ?? const Duration(),
+      reps: json['reps'] as int? ?? 0,
       id: json['id'] as String?,
     );
 
@@ -59,6 +61,7 @@ Map<String, dynamic> _$WorkoutBlockToJson(WorkoutBlock instance) =>
       'name': instance.name,
       'type': _$WorkoutTypeEnumMap[instance.type],
       'duration': instance.duration.inMicroseconds,
+      'reps': instance.reps,
     };
 
 K _$enumDecode<K, V>(
@@ -88,7 +91,6 @@ K _$enumDecode<K, V>(
 }
 
 const _$WorkoutTypeEnumMap = {
-  WorkoutType.Stretch: 'Stretch',
-  WorkoutType.Rest: 'Rest',
-  WorkoutType.Workout: 'Workout',
+  WorkoutType.Time: 'Time',
+  WorkoutType.Reps: 'Reps',
 };

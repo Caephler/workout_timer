@@ -7,7 +7,6 @@ class WorkoutTimerApp extends MaterialApp {
           key: key,
           home: SplashScreen(),
           theme: ThemeData(
-            applyElevationOverlayColor: false,
             fontFamily: 'Inter',
             primaryColor: Colors.blue,
             colorScheme: ColorScheme.light(

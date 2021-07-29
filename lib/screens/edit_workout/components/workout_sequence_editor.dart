@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:workout_timer/common/optional.dart';
 import 'package:workout_timer/common/workouts.dart';
 import 'package:workout_timer/screens/edit_workout/components/sequence_exercise_editor.dart';
+import 'package:workout_timer/screens/edit_workout/components/sequence_single_exercise_editor.dart';
 
 import 'sequence_action_row.dart';
-import 'single_exercise_editor.dart';
 
 class WorkoutSequenceEditor extends StatelessWidget {
   const WorkoutSequenceEditor({
@@ -18,6 +18,7 @@ class WorkoutSequenceEditor extends StatelessWidget {
     required this.insertLoopAfter,
     required this.removeBlockAt,
     required this.removeSelf,
+    required this.index,
   }) : super(key: key);
 
   final WorkoutSequence sequence;
@@ -35,25 +36,7 @@ class WorkoutSequenceEditor extends StatelessWidget {
   final void Function() onActivate;
   final void Function() insertExerciseAfter;
   final void Function() insertLoopAfter;
-
-  Widget _renderSingleBlock(int index) {
-    assert(index < sequence.blocks.length);
-
-    WorkoutBlock block = sequence.blocks[index];
-    return SingleExerciseEditor(
-      isEditing: isActivated,
-      block: block,
-      removeBlock: () {
-        removeBlockAt(index);
-      },
-      updateBlock: (newBlock) {
-        onUpdateBlock(
-          blockIndex: index,
-          block: newBlock,
-        );
-      },
-    );
-  }
+  final int index;
 
   @override
   Widget build(BuildContext context) {
@@ -63,11 +46,17 @@ class WorkoutSequenceEditor extends StatelessWidget {
           behavior: HitTestBehavior.opaque,
           onTap: onActivate,
           child: sequence.isSingleLoopAndBlock
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: _renderSingleBlock(0),
+              ? SequenceSingleExerciseEditor(
+                  index: index,
+                  sequence: sequence,
+                  removeSelf: removeSelf,
+                  isEditing: isActivated,
+                  removeBlockAt: removeBlockAt,
+                  onUpdateSequence: onUpdateSequence,
+                  onUpdateBlock: onUpdateBlock,
                 )
               : SequenceExerciseEditor(
+                  index: index,
                   sequence: sequence,
                   removeSelf: removeSelf,
                   isEditing: isActivated,
@@ -78,9 +67,12 @@ class WorkoutSequenceEditor extends StatelessWidget {
         ),
         ShowIfAnimated(
           shouldShow: isActivated,
-          child: SequenceActionRow(
-            insertExercise: insertExerciseAfter,
-            insertLoop: insertLoopAfter,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: SequenceActionRow(
+              insertExercise: insertExerciseAfter,
+              insertLoop: insertLoopAfter,
+            ),
           ),
         ),
       ],

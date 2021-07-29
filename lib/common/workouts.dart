@@ -30,11 +30,7 @@ class Workout {
       name: name,
       sequences: [
         WorkoutSequence.only(
-          WorkoutBlock(
-            name: 'Workout',
-            type: WorkoutType.Workout,
-            duration: Duration(minutes: 1),
-          ),
+          WorkoutBlock.simple(),
         ),
       ],
     );
@@ -91,7 +87,9 @@ class WorkoutSequence {
 
   Duration get totalDuration {
     return blocks.foldRight<Duration>(
-            (accumulator, element) => accumulator + element.duration,
+            (accumulator, element) => element.type == WorkoutType.Time
+                ? accumulator + element.duration
+                : accumulator + Duration(seconds: 5) * element.reps,
             Duration(seconds: 0)) *
         repeatTimes;
   }
@@ -133,11 +131,13 @@ class WorkoutBlock {
   final String name;
   final WorkoutType type;
   final Duration duration;
+  final int reps;
 
   WorkoutBlock({
     required this.name,
     required this.type,
-    required this.duration,
+    this.duration = const Duration(),
+    this.reps = 0,
     String? id,
   }) : this.id = id ?? UuidService.v4();
 
@@ -146,12 +146,22 @@ class WorkoutBlock {
     String? name,
     WorkoutType? type,
     Duration? duration,
+    int? reps,
   }) {
     return WorkoutBlock(
       id: id ?? this.id,
       name: name ?? this.name,
       type: type ?? this.type,
       duration: duration ?? this.duration,
+      reps: reps ?? this.reps,
+    );
+  }
+
+  factory WorkoutBlock.simple() {
+    return WorkoutBlock(
+      name: 'Workout',
+      type: WorkoutType.Time,
+      duration: Duration(seconds: 60),
     );
   }
 
@@ -161,12 +171,11 @@ class WorkoutBlock {
 
   @override
   String toString() {
-    return 'Workout { id $id, name $name, duration ${formatDuration(duration)} }';
+    return 'Workout { id $id, name $name, duration ${formatDuration(duration)}, reps $reps }';
   }
 }
 
 enum WorkoutType {
-  Stretch,
-  Rest,
-  Workout,
+  Time,
+  Reps,
 }

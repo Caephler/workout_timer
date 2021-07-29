@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:workout_timer/common/text.dart';
 import 'package:workout_timer/common/validators.dart';
 
 import 'dialog.dart';
@@ -25,8 +26,9 @@ Future<void> showInputDialog(
         return state.errorText;
       },
       autofocus: true,
-      decoration: const InputDecoration(
+      decoration: InputDecoration(
         errorMaxLines: 3,
+        errorStyle: AppTextStyles.body.getStyleFor(5, color: Colors.red),
       ),
       onChanged: (value) {
         state.didChange(value);

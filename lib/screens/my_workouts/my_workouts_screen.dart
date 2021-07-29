@@ -1,75 +1,47 @@
 import 'package:flutter/material.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:workout_timer/common/button.dart';
-import 'package:workout_timer/common/circle_elevated_button.dart';
+import 'package:workout_timer/common/colors.dart';
 import 'package:workout_timer/common/dialog/confirm_dialog.dart';
 import 'package:workout_timer/common/extensions.dart';
+import 'package:workout_timer/common/inkwell_button.dart';
 import 'package:workout_timer/common/storage/provider.dart';
 import 'package:workout_timer/common/storage/storage.dart';
 import 'package:workout_timer/common/text.dart';
 import 'package:workout_timer/common/workouts.dart';
 import 'package:workout_timer/screens/edit_workout/edit_workout_screen.dart';
+import 'package:workout_timer/screens/my_workouts/components/settings_hero.dart';
 import 'package:workout_timer/screens/my_workouts/components/workouts_list.dart';
+import 'package:workout_timer/screens/my_workouts/cubit/my_workouts_cubit.dart';
+import 'package:workout_timer/screens/settings/settings_screen.dart';
 import 'package:workout_timer/screens/workout_main/workout_main_screen.dart';
-
-Workout createWorkout(String name) => Workout(
-      name: name,
-      sequences: [
-        WorkoutSequence(
-          blocks: [
-            WorkoutBlock(
-                name: 'Stretch',
-                duration: Duration(seconds: 10),
-                type: WorkoutType.Stretch),
-          ],
-        ),
-        WorkoutSequence(
-          blocks: [
-            WorkoutBlock(
-                name: 'Workout',
-                type: WorkoutType.Workout,
-                duration: Duration(seconds: 45)),
-            WorkoutBlock(
-                name: 'Rest',
-                type: WorkoutType.Rest,
-                duration: Duration(seconds: 15)),
-          ],
-          repeatTimes: 1,
-        ),
-        WorkoutSequence(
-          blocks: [
-            WorkoutBlock(
-                name: 'Cool Down',
-                type: WorkoutType.Stretch,
-                duration: Duration(seconds: 60)),
-          ],
-        ),
-      ],
-    );
 
 class MyWorkoutsScreen extends StatelessWidget {
   const MyWorkoutsScreen({Key? key}) : super(key: key);
+
+  Widget _buildView(bool isReady, List<Workout>? workouts) {
+    return _MyWorkoutsScreenContent();
+  }
 
   @override
   Widget build(BuildContext context) {
     return LocalStorageProvider(
       getter: (storage) => storage.getWorkouts(),
       builder: (isReady, List<Workout>? workouts) {
-        if (isReady) {
-          assert(workouts != null);
-          return _MyWorkoutsScreenContent(workouts: workouts!);
+        if (!isReady) {
+          return Container();
         }
-        return _MyWorkoutsScreenContent(workouts: []);
+        return BlocProvider(
+          create: (_) => MyWorkoutsCubit(workouts!),
+          child: _buildView(isReady, workouts),
+        );
       },
     );
   }
 }
 
 class _MyWorkoutsScreenContent extends StatefulWidget {
-  _MyWorkoutsScreenContent({Key? key, required this.workouts})
-      : super(key: key);
-
-  final List<Workout> workouts;
+  _MyWorkoutsScreenContent({Key? key}) : super(key: key);
 
   @override
   _MyWorkoutsScreenContentState createState() =>
@@ -77,64 +49,49 @@ class _MyWorkoutsScreenContent extends StatefulWidget {
 }
 
 class _MyWorkoutsScreenContentState extends State<_MyWorkoutsScreenContent> {
-  @override
-  void initState() {
-    super.initState();
-    workouts = widget.workouts;
-  }
-
-  List<Workout> workouts = [];
-
-  @override
-  void didUpdateWidget(covariant _MyWorkoutsScreenContent oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    setState(() {
-      workouts = widget.workouts;
-    });
-  }
-
   void _onStartWorkout(BuildContext context, Workout workout) {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return WorkoutMainScreen(workout: workout);
     }));
   }
 
+  MyWorkoutsCubit _getCubit() {
+    return context.read<MyWorkoutsCubit>();
+  }
+
   Future<void> _onEditWorkout(
       BuildContext context, Workout workout, int index) async {
-    Workout? updatedWorkout = await Navigator.push<Workout>(
+    await Navigator.push<Workout>(
       context,
       MaterialPageRoute(
         builder: (context) {
           return EditWorkoutScreen(
             workout: workout,
+            onSave: (workout) {
+              MyWorkoutsCubit cubit = _getCubit();
+              List<Workout> workouts = cubit.state.workouts;
+
+              List<Workout> updatedWorkouts = index < workouts.length
+                  ? workouts.copyUpdateAt(index, (_) => workout)
+                  : workouts.copyInsertAt(index, workout);
+              StorageService.instance.setWorkouts(updatedWorkouts);
+              cubit.setWorkouts(updatedWorkouts);
+            },
           );
         },
       ),
     );
-
-    if (updatedWorkout == null) {
-      return;
-    }
-
-    List<Workout> updatedWorkouts = index < workouts.length
-        ? workouts.copyUpdateAt(index, (_) => updatedWorkout)
-        : workouts.copyInsertAt(index, updatedWorkout);
-    StorageService.instance.setWorkouts(updatedWorkouts);
-    setState(() {
-      workouts = updatedWorkouts;
-    });
   }
 
   Future<void> _onDeleteWorkout(BuildContext context, int index) async {
+    MyWorkoutsCubit cubit = _getCubit();
+    List<Workout> workouts = cubit.state.workouts;
     showConfirmDialog(
       context,
       onOk: () {
         List<Workout> updatedWorkouts = workouts.copyRemoveAt(index);
         StorageService.instance.setWorkouts(updatedWorkouts);
-        setState(() {
-          workouts = updatedWorkouts;
-        });
+        _getCubit().setWorkouts(updatedWorkouts);
       },
       title: 'Confirm Delete',
       description: 'Once deleted, this item will be gone forever. Continue?',
@@ -143,6 +100,8 @@ class _MyWorkoutsScreenContentState extends State<_MyWorkoutsScreenContent> {
   }
 
   void _onAddWorkout(BuildContext context) {
+    MyWorkoutsCubit cubit = context.read<MyWorkoutsCubit>();
+    List<Workout> workouts = cubit.state.workouts;
     _onEditWorkout(
       context,
       Workout.simple(),
@@ -151,6 +110,8 @@ class _MyWorkoutsScreenContentState extends State<_MyWorkoutsScreenContent> {
   }
 
   void _onReorderWorkout(int oldIndex, int newIndex) {
+    MyWorkoutsCubit cubit = _getCubit();
+    List<Workout> workouts = cubit.state.workouts;
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
@@ -159,66 +120,101 @@ class _MyWorkoutsScreenContentState extends State<_MyWorkoutsScreenContent> {
         workouts.copyRemoveAt(oldIndex).copyInsertAt(newIndex, workout);
 
     StorageService.instance.setWorkouts(newWorkouts);
-    setState(() {
-      workouts = newWorkouts;
-    });
+    cubit.setWorkouts(newWorkouts);
+  }
+
+  String _getGreeting() {
+    int hour = DateTime.now().hour;
+    if (hour < 3 || hour > 18) {
+      return 'Good evening';
+    } else if (hour < 12) {
+      return 'Good morning';
+    } else {
+      return 'Good afternoon';
+    }
+  }
+
+  Widget _buildTopBar() {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            InkwellButton(
+              child: SettingsHero(
+                isActive: false,
+              ),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                  return SettingsScreen();
+                }));
+              },
+            ),
+            SizedBox(height: 8.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${_getGreeting()},',
+                        style: AppTextStyles.display.getStyleFor(
+                          5,
+                          color: Colors.black45,
+                        ),
+                      ),
+                      Text("Let's workout!",
+                          style: AppTextStyles.display.getStyleFor(
+                            3,
+                            weight: TextWeight.Medium,
+                            color: Colors.blue,
+                          )),
+                    ],
+                  ),
+                  TextButton(
+                    style: AppButtonThemes.secondary,
+                    onPressed: () {
+                      _onAddWorkout(context);
+                    },
+                    child: Icon(Icons.add, color: Colors.blue),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Container(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      textBaseline: TextBaseline.alphabetic,
-                      children: [
-                        Icon(
-                          LineIcons.dumbbell,
-                          size: 24,
-                          color: Colors.blue,
-                        ),
-                        SizedBox(width: 8.0),
-                        Text(
-                          'My Workouts',
-                          style: AppTextStyles.display.getStyleFor(
-                            3,
-                            weight: TextWeight.Bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    CircleElevatedButton(
-                      onPressed: () {
-                        _onAddWorkout(context);
-                      },
-                      child: Icon(Icons.add),
-                    ),
-                  ],
-                ),
+      backgroundColor: AppColors.background,
+      body: Column(
+        children: [
+          _buildTopBar(),
+          Expanded(
+            child: Container(
+              color: AppColors.background,
+              child: WorkoutList(
+                workouts: context
+                    .select((MyWorkoutsCubit cubit) => cubit.state.workouts),
+                onStartWorkout: (workout) => _onStartWorkout(context, workout),
+                onEditWorkout: (workout, index) =>
+                    _onEditWorkout(context, workout, index),
+                onDeleteWorkout: (index) => _onDeleteWorkout(context, index),
+                onReorderWorkout: _onReorderWorkout,
+                onAddWorkout: () => _onAddWorkout(context),
               ),
-              Expanded(
-                child: WorkoutList(
-                  workouts: workouts,
-                  onStartWorkout: (workout) =>
-                      _onStartWorkout(context, workout),
-                  onEditWorkout: (workout, index) =>
-                      _onEditWorkout(context, workout, index),
-                  onDeleteWorkout: (index) => _onDeleteWorkout(context, index),
-                  onReorderWorkout: _onReorderWorkout,
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

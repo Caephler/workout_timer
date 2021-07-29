@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icons.dart';
 
 class SequenceActionRow extends StatelessWidget {
   const SequenceActionRow({
@@ -16,12 +17,12 @@ class SequenceActionRow extends StatelessWidget {
       children: [
         TextButton.icon(
           onPressed: insertExercise,
-          icon: Icon(Icons.add),
+          icon: Icon(LineIcons.dumbbell),
           label: Text('Add Exercise'),
         ),
         TextButton.icon(
           onPressed: insertLoop,
-          icon: Icon(Icons.add),
+          icon: Icon(LineIcons.infinity),
           label: Text('Add Loop'),
         ),
       ],
