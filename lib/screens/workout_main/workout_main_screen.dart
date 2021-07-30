@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:workout_timer/common/ads.dart';
 import 'package:workout_timer/common/audio.dart';
 import 'package:workout_timer/common/button.dart';
 import 'package:workout_timer/common/dialog/confirm_dialog.dart';
@@ -59,6 +60,8 @@ class _WorkoutMainScreenContentState extends State<WorkoutMainScreenContent> {
   @override
   void initState() {
     super.initState();
+
+    AdService.instance.preloadRewardedAd();
 
     TimerBloc timer = context.read<TimerBloc>();
     WorkoutProgressCubit workoutProgress = context.read<WorkoutProgressCubit>();
@@ -126,7 +129,8 @@ class _WorkoutMainScreenContentState extends State<WorkoutMainScreenContent> {
     _resumeGlobalCountUp();
   }
 
-  void transitionToFinishScreen() {
+  Future<void> transitionToFinishScreen() async {
+    await AdService.instance.showRewardedAd();
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
