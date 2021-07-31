@@ -10,6 +10,7 @@ import 'package:workout_timer/common/storage/storage.dart';
 import 'package:workout_timer/common/text.dart';
 import 'package:workout_timer/common/workouts.dart';
 import 'package:workout_timer/screens/edit_workout/edit_workout_screen.dart';
+import 'package:workout_timer/screens/my_workouts/components/iap_status_badge.dart';
 import 'package:workout_timer/screens/my_workouts/components/settings_hero.dart';
 import 'package:workout_timer/screens/my_workouts/components/workouts_list.dart';
 import 'package:workout_timer/screens/my_workouts/cubit/my_workouts_cubit.dart';
@@ -141,15 +142,24 @@ class _MyWorkoutsScreenContentState extends State<_MyWorkoutsScreenContent> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            InkwellButton(
-              child: SettingsHero(
-                isActive: false,
+            SizedBox(
+              height: 48,
+              child: Row(
+                children: [
+                  InkwellButton(
+                    child: SettingsHero(
+                      isActive: false,
+                    ),
+                    onTap: () {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (_) {
+                        return SettingsScreen();
+                      }));
+                    },
+                  ),
+                  IAPStatusBadge(),
+                ],
               ),
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-                  return SettingsScreen();
-                }));
-              },
             ),
             SizedBox(height: 8.0),
             Padding(

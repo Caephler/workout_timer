@@ -1,4 +1,5 @@
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:workout_timer/common/storage/shared_prefs.dart';
 
 class AdService {
   AdService._();
@@ -10,6 +11,11 @@ class AdService {
   Future<void> preloadRewardedAd() async {
     /// If ad already loaded, skip
     if (_ad != null) {
+      return;
+    }
+
+    /// If user has bought ad removal, skip
+    if (await SharedPreferencesService.instance.getHasBoughtAdRemoval()) {
       return;
     }
 
@@ -28,6 +34,10 @@ class AdService {
   }
 
   Future<void> showRewardedAd() async {
+    if (await SharedPreferencesService.instance.getHasBoughtAdRemoval()) {
+      return;
+    }
+
     if (_ad != null) {
       await _ad?.show(onUserEarnedReward: (ad, item) {});
       print('ad shown, clearing ad');

@@ -131,10 +131,15 @@ class _WorkoutMainScreenContentState extends State<WorkoutMainScreenContent> {
 
   Future<void> transitionToFinishScreen() async {
     await AdService.instance.showRewardedAd();
+    WorkoutProgressCubit cubit = context.read<WorkoutProgressCubit>();
+    CountUpBloc countUp = context.read<CountUpBloc>();
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => WorkoutCompleteScreen(),
+        builder: (context) => WorkoutCompleteScreen(
+          workout: cubit.state.workout,
+          timeElapsed: countUp.state.duration,
+        ),
       ),
     );
   }

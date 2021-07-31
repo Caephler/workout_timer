@@ -10,8 +10,7 @@ class TtsService {
   static TtsService instance = TtsService._();
 
   Future<dynamic> speak(String text) async {
-    await SharedPreferencesService.instance.ready;
-    bool shouldSpeak = SharedPreferencesService.instance.getTtsSetting();
+    bool shouldSpeak = await SharedPreferencesService.instance.getTtsSetting();
     if (!shouldSpeak) {
       return null;
     }

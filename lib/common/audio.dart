@@ -1,4 +1,5 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:workout_timer/common/storage/shared_prefs.dart';
 
 class AudioService {
   late final AudioCache _player;
@@ -16,11 +17,17 @@ class AudioService {
     _player.play(path);
   }
 
-  void playBlip() {
-    _player.play('blip_countdown.wav');
+  Future<void> playBlip() async {
+    bool shouldPlay = await SharedPreferencesService.instance.getBeepSetting();
+    if (shouldPlay) {
+      _player.play('blip_countdown.wav');
+    }
   }
 
-  void playFinishBlip() {
-    _player.play('blip_finish.wav');
+  Future<void> playFinishBlip() async {
+    bool shouldPlay = await SharedPreferencesService.instance.getBeepSetting();
+    if (shouldPlay) {
+      _player.play('blip_finish.wav');
+    }
   }
 }

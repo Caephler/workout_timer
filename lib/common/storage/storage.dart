@@ -22,7 +22,7 @@ class StorageService {
         _workoutDataKey,
         WorkoutData(
           version: 1,
-          data: WorkoutDataV1(workouts: []),
+          data: WorkoutDataV1(workouts: []).toJson(),
         ).toJson(),
       );
     }

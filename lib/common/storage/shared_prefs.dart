@@ -17,11 +17,33 @@ class SharedPreferencesService {
   late SharedPreferences _prefs;
   late Future<bool> ready;
 
-  bool getTtsSetting() {
+  Future<bool> getTtsSetting() async {
+    await ready;
     return _prefs.getBool('tts_setting') ?? true;
   }
 
-  setTtsSetting(bool value) {
+  Future<void> setTtsSetting(bool value) async {
+    await ready;
     _prefs.setBool('tts_setting', value);
+  }
+
+  Future<bool> getHasBoughtAdRemoval() async {
+    await ready;
+    return _prefs.getBool('ads_removed') ?? false;
+  }
+
+  Future<void> setHasBoughtAdRemoval(bool value) async {
+    await ready;
+    _prefs.setBool('ads_removed', value);
+  }
+
+  Future<bool> getBeepSetting() async {
+    await ready;
+    return _prefs.getBool('beep_setting') ?? true;
+  }
+
+  Future<void> setBeepSetting(bool value) async {
+    await ready;
+    _prefs.setBool('beep_setting', value);
   }
 }
