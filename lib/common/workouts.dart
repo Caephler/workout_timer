@@ -54,6 +54,20 @@ class Workout {
     );
   }
 
+  Workout duplicate() {
+    return copyWith(id: UuidService.v4());
+  }
+
+  Workout copyFromPreset(Workout presetWorkout) {
+    return copyWith(
+      sequences: presetWorkout.sequences
+          .map(
+            (seq) => seq.duplicate(),
+          )
+          .toList(),
+    );
+  }
+
   factory Workout.fromJson(Map<String, dynamic> json) =>
       _$WorkoutFromJson(json);
   Map<String, dynamic> toJson() => _$WorkoutToJson(this);
@@ -118,6 +132,13 @@ class WorkoutSequence {
     );
   }
 
+  WorkoutSequence duplicate() {
+    return copyWith(
+      id: UuidService.v4(),
+      blocks: blocks.map((block) => block.duplicate()).toList(),
+    );
+  }
+
   @override
   String toString() {
     return 'WorkoutSequence { id $id, repeatTimes $repeatTimes, blocks ${blocks.map((s) => s.toString()).join(',\n')}}';
@@ -155,6 +176,10 @@ class WorkoutBlock {
       duration: duration ?? this.duration,
       reps: reps ?? this.reps,
     );
+  }
+
+  WorkoutBlock duplicate() {
+    return copyWith(id: UuidService.v4());
   }
 
   factory WorkoutBlock.simple() {

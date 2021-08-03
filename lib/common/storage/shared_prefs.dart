@@ -27,6 +27,16 @@ class SharedPreferencesService {
     _prefs.setBool('tts_setting', value);
   }
 
+  Future<bool> getWakelockSetting() async {
+    await ready;
+    return _prefs.getBool('wakelock_setting') ?? true;
+  }
+
+  Future<void> setWakelockSetting(bool value) async {
+    await ready;
+    _prefs.setBool('wakelock_setting', value);
+  }
+
   Future<bool> getHasBoughtAdRemoval() async {
     await ready;
     return _prefs.getBool('ads_removed') ?? false;

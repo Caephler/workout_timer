@@ -4,6 +4,7 @@ import 'package:workout_timer/common/storage/shared_prefs.dart';
 class TtsService {
   TtsService._() {
     _tts.setSpeechRate(0.5);
+    _tts.setVolume(1.0);
   }
 
   FlutterTts _tts = FlutterTts();

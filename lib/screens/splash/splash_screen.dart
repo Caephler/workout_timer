@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:workout_timer/common/iap/iap.dart';
 import 'package:workout_timer/common/storage/provider.dart';
 import 'package:workout_timer/common/storage/storage.dart';
 import 'package:workout_timer/screens/my_workouts/my_workouts_screen.dart';
@@ -55,6 +56,7 @@ class _SplashScreenContentState extends State<_SplashScreenContent> {
 
   Future<void> onStart() async {
     await StorageService.instance.init();
+    await IAPService.instance.init();
   }
 
   @override

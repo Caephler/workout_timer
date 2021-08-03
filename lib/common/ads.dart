@@ -40,14 +40,12 @@ class AdService {
 
     if (_ad != null) {
       await _ad?.show(onUserEarnedReward: (ad, item) {});
-      print('ad shown, clearing ad');
       _ad = null;
       return;
     }
 
     await preloadRewardedAd();
     await _ad?.show(onUserEarnedReward: (ad, item) {});
-    print('ad shown, clearing ad');
     _ad = null;
     return;
   }

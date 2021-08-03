@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icon.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:workout_timer/common/dialog/number_dialog.dart';
 import 'package:workout_timer/common/optional.dart';
@@ -211,7 +212,7 @@ class SequenceExerciseEditor extends StatelessWidget {
                             ),
                           );
                         },
-                        icon: Icon(Icons.add),
+                        icon: Icon(LineIcons.dumbbell),
                         label: Text('Add Exercise'),
                       ),
                     ),

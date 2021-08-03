@@ -14,15 +14,17 @@ class WorkoutCard extends StatelessWidget {
     required this.onStartWorkout,
     required this.onEditWorkout,
     required this.onDeleteWorkout,
+    required this.onDuplicateWorkout,
     required this.index,
     required this.isExpanded,
     required this.onExpand,
   }) : super(key: key);
 
   final Workout workout;
-  final void Function(Workout workout) onStartWorkout;
-  final void Function(Workout workout) onEditWorkout;
-  final void Function() onDeleteWorkout;
+  final VoidCallback onStartWorkout;
+  final VoidCallback onEditWorkout;
+  final VoidCallback onDeleteWorkout;
+  final VoidCallback onDuplicateWorkout;
   final int index;
   final bool isExpanded;
   final void Function(bool) onExpand;
@@ -36,7 +38,8 @@ class WorkoutCard extends StatelessWidget {
           showChoiceDialog(
             context,
             actions: [
-              ChoiceAction('Edit', () => onEditWorkout(workout)),
+              ChoiceAction('Duplicate', () => onDuplicateWorkout()),
+              ChoiceAction('Edit', () => onEditWorkout()),
               ChoiceAction('Delete', () => onDeleteWorkout()),
             ],
           );
@@ -99,7 +102,7 @@ class WorkoutCard extends StatelessWidget {
                   SizedBox(width: 36.0),
                   ElevatedButton(
                     onPressed: () {
-                      onStartWorkout(workout);
+                      onStartWorkout();
                     },
                     style: TextButton.styleFrom(
                       padding: EdgeInsets.zero,
@@ -113,7 +116,6 @@ class WorkoutCard extends StatelessWidget {
               WorkoutPreview(
                 index: index,
                 workout: workout,
-                onEditWorkout: onEditWorkout,
                 isExpanded: isExpanded,
                 onExpand: onExpand,
               ),

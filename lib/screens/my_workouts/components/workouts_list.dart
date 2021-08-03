@@ -14,11 +14,13 @@ class WorkoutList extends StatelessWidget {
     required this.onEditWorkout,
     required this.onDeleteWorkout,
     required this.onReorderWorkout,
+    required this.onDuplicateWorkout,
     required this.onAddWorkout,
   });
   final List<Workout> workouts;
   final void Function(Workout workout) onStartWorkout;
   final Future<void> Function(Workout workout, int index) onEditWorkout;
+  final Future<void> Function(Workout workout, int index) onDuplicateWorkout;
   final Future<void> Function(int index) onDeleteWorkout;
   final void Function(int oldIndex, int newIndex) onReorderWorkout;
   final VoidCallback onAddWorkout;
@@ -79,9 +81,10 @@ class WorkoutList extends StatelessWidget {
             index: index,
             workout: workout,
             isExpanded: selectedIndex == index,
-            onStartWorkout: onStartWorkout,
-            onEditWorkout: (workout) => onEditWorkout(workout, index),
+            onStartWorkout: () => onStartWorkout(workout),
+            onEditWorkout: () => onEditWorkout(workout, index),
             onDeleteWorkout: () => onDeleteWorkout(index),
+            onDuplicateWorkout: () => onDuplicateWorkout(workout, index),
             onExpand: (isExpanded) {
               _expandIndex(context, isExpanded ? index : null);
             },

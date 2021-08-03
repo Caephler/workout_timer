@@ -7,5 +7,5 @@ class UuidService {
     return _uuid.v4();
   }
 
-  UuidService(_);
+  UuidService._();
 }

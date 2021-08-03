@@ -5,6 +5,7 @@ import 'package:workout_timer/screens/my_workouts/components/settings_hero.dart'
 import 'package:workout_timer/screens/settings/components/beep_setting.dart';
 import 'package:workout_timer/screens/settings/components/tts_setting.dart';
 import 'package:workout_timer/screens/settings/components/version_details.dart';
+import 'package:workout_timer/screens/settings/components/wakelock_setting.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -46,6 +47,8 @@ class SettingsScreen extends StatelessWidget {
                 TTSSetting(),
                 SizedBox(height: 16.0),
                 BeepSetting(),
+                SizedBox(height: 16.0),
+                WakelockSetting(),
                 SizedBox(height: 48.0),
                 VersionDetails(),
               ],

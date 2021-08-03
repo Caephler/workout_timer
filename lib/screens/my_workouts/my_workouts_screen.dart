@@ -6,6 +6,7 @@ import 'package:workout_timer/common/dialog/confirm_dialog.dart';
 import 'package:workout_timer/common/extensions.dart';
 import 'package:workout_timer/common/inkwell_button.dart';
 import 'package:workout_timer/common/storage/provider.dart';
+import 'package:workout_timer/common/storage/shared_prefs.dart';
 import 'package:workout_timer/common/storage/storage.dart';
 import 'package:workout_timer/common/text.dart';
 import 'package:workout_timer/common/workouts.dart';
@@ -16,6 +17,8 @@ import 'package:workout_timer/screens/my_workouts/components/workouts_list.dart'
 import 'package:workout_timer/screens/my_workouts/cubit/my_workouts_cubit.dart';
 import 'package:workout_timer/screens/settings/settings_screen.dart';
 import 'package:workout_timer/screens/workout_main/workout_main_screen.dart';
+
+import 'package:wakelock/wakelock.dart';
 
 class MyWorkoutsScreen extends StatelessWidget {
   const MyWorkoutsScreen({Key? key}) : super(key: key);
@@ -50,6 +53,24 @@ class _MyWorkoutsScreenContent extends StatefulWidget {
 }
 
 class _MyWorkoutsScreenContentState extends State<_MyWorkoutsScreenContent> {
+  @override
+  void initState() {
+    SharedPreferencesService.instance
+        .getWakelockSetting()
+        .then((needsWakelock) {
+      if (needsWakelock) {
+        Wakelock.enable();
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    Wakelock.disable();
+    super.dispose();
+  }
+
   void _onStartWorkout(BuildContext context, Workout workout) {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return WorkoutMainScreen(workout: workout);
@@ -58,6 +79,16 @@ class _MyWorkoutsScreenContentState extends State<_MyWorkoutsScreenContent> {
 
   MyWorkoutsCubit _getCubit() {
     return context.read<MyWorkoutsCubit>();
+  }
+
+  Future<void> _onDuplicateWorkout(
+      BuildContext context, Workout workout, int index) async {
+    MyWorkoutsCubit cubit = _getCubit();
+    List<Workout> workouts = cubit.state.workouts;
+    List<Workout> updatedWorkouts =
+        workouts.copyInsertAt(workouts.length, workouts[index].duplicate());
+    StorageService.instance.setWorkouts(updatedWorkouts);
+    _getCubit().setWorkouts(updatedWorkouts);
   }
 
   Future<void> _onEditWorkout(
@@ -105,7 +136,7 @@ class _MyWorkoutsScreenContentState extends State<_MyWorkoutsScreenContent> {
     List<Workout> workouts = cubit.state.workouts;
     _onEditWorkout(
       context,
-      Workout.simple(),
+      Workout.empty(),
       workouts.length,
     );
   }
@@ -213,15 +244,17 @@ class _MyWorkoutsScreenContentState extends State<_MyWorkoutsScreenContent> {
             child: Container(
               color: AppColors.background,
               child: WorkoutList(
-                workouts: context
-                    .select((MyWorkoutsCubit cubit) => cubit.state.workouts),
-                onStartWorkout: (workout) => _onStartWorkout(context, workout),
-                onEditWorkout: (workout, index) =>
-                    _onEditWorkout(context, workout, index),
-                onDeleteWorkout: (index) => _onDeleteWorkout(context, index),
-                onReorderWorkout: _onReorderWorkout,
-                onAddWorkout: () => _onAddWorkout(context),
-              ),
+                  workouts: context
+                      .select((MyWorkoutsCubit cubit) => cubit.state.workouts),
+                  onStartWorkout: (workout) =>
+                      _onStartWorkout(context, workout),
+                  onEditWorkout: (workout, index) =>
+                      _onEditWorkout(context, workout, index),
+                  onDeleteWorkout: (index) => _onDeleteWorkout(context, index),
+                  onReorderWorkout: _onReorderWorkout,
+                  onAddWorkout: () => _onAddWorkout(context),
+                  onDuplicateWorkout: (workout, index) =>
+                      _onDuplicateWorkout(context, workout, index)),
             ),
           ),
         ],

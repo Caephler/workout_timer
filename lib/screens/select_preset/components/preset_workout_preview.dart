@@ -3,18 +3,17 @@ import 'package:line_icons/line_icons.dart';
 import 'package:workout_timer/common/controlled_expansion_tile.dart';
 import 'package:workout_timer/common/text.dart';
 import 'package:workout_timer/common/workouts.dart';
-import 'package:workout_timer/screens/my_workouts/components/workout_details_list.dart';
+
+import 'preset_workout_details_list.dart';
 
 class WorkoutPreview extends StatefulWidget {
   const WorkoutPreview({
     required this.workout,
-    required this.index,
     required this.isExpanded,
     required this.onExpand,
   });
 
   final Workout workout;
-  final int index;
   final bool isExpanded;
   final void Function(bool isExpanded) onExpand;
 

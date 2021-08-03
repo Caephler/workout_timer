@@ -12,6 +12,7 @@ import 'package:workout_timer/common/workouts.dart';
 import 'package:workout_timer/screens/edit_workout/components/sequence_action_row.dart';
 import 'package:workout_timer/screens/edit_workout/components/workout_name_editor.dart';
 import 'package:workout_timer/screens/edit_workout/components/workout_sequence_editor.dart';
+import 'package:workout_timer/screens/select_preset/select_preset_screen.dart';
 
 import 'cubit/workout_editor_cubit.dart';
 
@@ -105,6 +106,21 @@ class WorkoutScreenContent extends StatelessWidget {
     );
   }
 
+  Future<void> _selectPreset(BuildContext context) async {
+    Workout? selectedWorkout = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => SelectPresetScreen(),
+      ),
+    );
+
+    if (selectedWorkout != null) {
+      WorkoutEditorCubit cubit = context.read<WorkoutEditorCubit>();
+      cubit.updateWorkout(
+        cubit.state.workout.copyFromPreset(selectedWorkout),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Workout workout =
@@ -133,13 +149,24 @@ class WorkoutScreenContent extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Icon(
-                              LineIcons.swimmer,
+                              LineIcons.box,
                               size: 100,
                               color: Colors.blue,
                             ),
                             SizedBox(height: 16.0),
                             Text(
-                              'No exercises in this workout routine yet. Why not add one now?',
+                              'No exercises in this workout routine yet. Why not select a preset to work from?',
+                              textAlign: TextAlign.center,
+                              style: AppTextStyles.body
+                                  .getStyleFor(5, color: Colors.black45),
+                            ),
+                            ElevatedButton(
+                                onPressed: () => _selectPreset(context),
+                                child: Text('Select Preset',
+                                    style: AppTextStyles.body.getStyleFor(5))),
+                            SizedBox(height: 16.0),
+                            Text(
+                              'Or you can create your own from scratch:',
                               textAlign: TextAlign.center,
                               style: AppTextStyles.body
                                   .getStyleFor(5, color: Colors.black45),
