@@ -59,3 +59,17 @@ Validator<String> createLengthValidator(int min, int max, String? error) {
     );
   };
 }
+
+Validator<String> createEmptyStringValidator(String? error) {
+  return (value) {
+    bool isValid = isLength(value, 1);
+    return ValidatorResult(
+      isValid,
+      isValid
+          ? []
+          : [
+              error ?? 'Input must not be empty.',
+            ],
+    );
+  };
+}

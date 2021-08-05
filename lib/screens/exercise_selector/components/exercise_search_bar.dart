@@ -29,6 +29,8 @@ class _ExerciseSearchBarState extends State<ExerciseSearchBar> {
 
   @override
   Widget build(BuildContext context) {
+    String errorMessage =
+        context.select((ExerciseSelectorCubit cubit) => cubit.state.error);
     return SafeArea(
       child: Container(
         padding: const EdgeInsets.all(16.0),
@@ -54,6 +56,8 @@ class _ExerciseSearchBarState extends State<ExerciseSearchBar> {
                         },
                         icon: Icon(LineIcons.times),
                       ),
+                      errorText: errorMessage.length > 0 ? errorMessage : null,
+                      errorStyle: AppTextStyles.body.getStyleFor(5),
                     ),
                   ),
                 ),

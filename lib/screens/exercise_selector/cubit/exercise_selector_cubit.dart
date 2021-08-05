@@ -18,11 +18,12 @@ class ExerciseSelectorCubit extends Cubit<ExerciseSelectorState> {
                 ExerciseType.Yoga,
               ],
             ),
+            error: '',
           ),
         );
 
   void updateName(String name) {
-    emit(state.copyWith(name: name));
+    emit(state.copyWith(name: name, error: name.length > 0 ? '' : null));
   }
 
   void selectCategory(ExerciseType category) {
@@ -56,5 +57,9 @@ class ExerciseSelectorCubit extends Cubit<ExerciseSelectorState> {
         categories: categories,
       ),
     );
+  }
+
+  void setError(String error) {
+    emit(state.copyWith(error: error));
   }
 }

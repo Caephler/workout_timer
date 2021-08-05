@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:workout_timer/common/text.dart';
 import 'package:workout_timer/common/validators.dart';
 
@@ -13,29 +14,42 @@ Future<void> showInputDialog(
   void Function()? onCancel,
   Iterable<Validator<String>>? validators,
 }) async {
-  showDialogOf<String>(context,
-      defaultValue: defaultValue,
-      title: title,
-      helpText: helpText,
-      onOk: onOk,
-      onCancel: onCancel,
-      validators: validators, buildContent: (state, commitChange) {
-    return TextFormField(
-      initialValue: state.value,
-      validator: (value) {
-        return state.errorText;
-      },
-      autofocus: true,
-      decoration: InputDecoration(
-        errorMaxLines: 3,
-        errorStyle: AppTextStyles.body.getStyleFor(5, color: Colors.red),
-      ),
-      onChanged: (value) {
-        state.didChange(value);
-      },
-      onEditingComplete: () {
-        commitChange();
-      },
-    );
-  });
+  TextEditingController controller = TextEditingController(text: defaultValue);
+  showDialogOf<String>(
+    context,
+    defaultValue: defaultValue,
+    title: title,
+    helpText: helpText,
+    onOk: onOk,
+    onCancel: onCancel,
+    validators: validators,
+    buildContent: (state, commitChange) {
+      return TextFormField(
+        controller: controller,
+        validator: (value) {
+          return state.errorText;
+        },
+        autofocus: true,
+        decoration: InputDecoration(
+          errorMaxLines: 3,
+          errorStyle: AppTextStyles.body.getStyleFor(5, color: Colors.red),
+          suffixIcon: IconButton(
+            onPressed: () {
+              controller.clear();
+              state.didChange('');
+            },
+            icon: Icon(
+              LineIcons.times,
+            ),
+          ),
+        ),
+        onChanged: (value) {
+          state.didChange(value);
+        },
+        onEditingComplete: () {
+          commitChange();
+        },
+      );
+    },
+  );
 }

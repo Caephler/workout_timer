@@ -40,7 +40,9 @@ class WorkoutNameEditor extends StatelessWidget {
           },
           validators: [
             createLengthValidator(
-                1, 40, 'Your workout name must have at most 40 characters.'),
+                0, 40, 'Your workout name must have at most 40 characters.'),
+            createEmptyStringValidator(
+                'Your workout name should not be empty.'),
           ],
         );
       },

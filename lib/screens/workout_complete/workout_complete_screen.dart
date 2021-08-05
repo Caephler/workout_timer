@@ -73,6 +73,20 @@ class WorkoutCompleteScreen extends StatelessWidget {
                         ],
                       ),
                     ),
+                    TextButton.icon(
+                      onPressed: () {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MyWorkoutsScreen(),
+                          ),
+                          (route) => false,
+                        );
+                      },
+                      icon: Icon(LineIcons.angleLeft),
+                      label: Text('Back to My Workouts',
+                          style: AppTextStyles.body.getStyleFor(5)),
+                    ),
                     SizedBox(height: 32.0),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -90,7 +104,7 @@ class WorkoutCompleteScreen extends StatelessWidget {
                           (route) => false,
                         );
                       },
-                      icon: Icon(LineIcons.reply),
+                      icon: Icon(LineIcons.angleLeft),
                       label: Text('Back to My Workouts',
                           style: AppTextStyles.body.getStyleFor(5)),
                     ),

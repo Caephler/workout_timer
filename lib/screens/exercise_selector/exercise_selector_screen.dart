@@ -13,6 +13,12 @@ class ExerciseSelectorScreen extends StatelessWidget {
 
   void onSave(BuildContext context) {
     String name = context.read<ExerciseSelectorCubit>().state.name;
+    if (name.length <= 0) {
+      context
+          .read<ExerciseSelectorCubit>()
+          .setError('Workout name cannot be empty');
+      return;
+    }
 
     Navigator.pop(context, name);
   }
