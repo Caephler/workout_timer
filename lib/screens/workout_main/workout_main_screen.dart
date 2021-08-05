@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wakelock/wakelock.dart';
 import 'package:workout_timer/common/ads.dart';
 import 'package:workout_timer/common/audio.dart';
 import 'package:workout_timer/common/button.dart';
 import 'package:workout_timer/common/dialog/confirm_dialog.dart';
 import 'package:workout_timer/common/speech.dart';
+import 'package:workout_timer/common/storage/shared_prefs.dart';
 import 'package:workout_timer/common/workouts.dart';
 import 'package:workout_timer/screens/workout_complete/workout_complete_screen.dart';
 import 'package:workout_timer/screens/workout_main/bloc/count_up/bloc/count_up_bloc.dart';
@@ -61,6 +63,14 @@ class _WorkoutMainScreenContentState extends State<WorkoutMainScreenContent> {
   void initState() {
     super.initState();
 
+    SharedPreferencesService.instance
+        .getWakelockSetting()
+        .then((needsWakelock) {
+      if (needsWakelock) {
+        Wakelock.enable();
+      }
+    });
+
     AdService.instance.preloadInterstitialAd();
 
     TimerBloc timer = context.read<TimerBloc>();
@@ -87,6 +97,12 @@ class _WorkoutMainScreenContentState extends State<WorkoutMainScreenContent> {
 
     _initializeTimer();
     _initializeGlobalCountUp();
+  }
+
+  @override
+  void dispose() {
+    Wakelock.disable();
+    super.dispose();
   }
 
   void _initializeGlobalCountUp() {

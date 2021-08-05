@@ -10,7 +10,11 @@ class ExerciseMaster {
 
   static ExerciseMaster instance = ExerciseMaster._();
 
-  final List<String> _coreExercises = [
+  final List<String> _commonExercises = [
+    'Rest',
+  ];
+
+  final Set<String> _coreExercises = {
     'Plank',
     'Plank Jacks',
     'Crunches',
@@ -21,8 +25,9 @@ class ExerciseMaster {
     'Heel Taps',
     'Side Plank (L)',
     'Side Plank (R)',
-  ];
-  final List<String> _legExercises = [
+  };
+
+  final Set<String> _legExercises = {
     'Squats',
     'Lunges',
     'Wide Squat',
@@ -30,15 +35,17 @@ class ExerciseMaster {
     'Glute Bridge',
     'Jump Squat',
     'Single Leg Deadlift',
-  ];
-  final List<String> _armExercises = [
+  };
+
+  final Set<String> _armExercises = {
     'Push Ups',
     'Tricep Dips',
     'Knee Push Ups',
     'Inclined Push Ups',
     'Inchworm',
-  ];
-  final List<String> _yogaExercises = [
+  };
+
+  final Set<String> _yogaExercises = {
     'Mountain Pose',
     'Chair Pose',
     'Downward Dog',
@@ -55,20 +62,7 @@ class ExerciseMaster {
     'Wheel Pose',
     'Handstand',
     'Headstand'
-  ];
-
-  List<String> get allExercises {
-    List<String> exerciseList = [
-      ..._coreExercises,
-      ..._legExercises,
-      ..._armExercises,
-      ..._yogaExercises
-    ];
-
-    exerciseList.sort();
-
-    return exerciseList;
-  }
+  };
 
   final Map<String, String> _exerciseImages = {
     /// Core
@@ -116,46 +110,69 @@ class ExerciseMaster {
     // 'wheel pose': '',
     // 'handstand': '',
     // 'headstand': '',
+
+    /// Common
+    // 'rest': '',
   };
 
-  List<String> get coreExercises {
-    return _coreExercises;
-  }
-
-  List<String> get legExercises {
-    return _legExercises;
-  }
-
-  List<String> get armExercises {
-    return _armExercises;
-  }
-
-  List<String> get yogaExercises {
-    return _yogaExercises;
-  }
-
   String? getExerciseImageFor(String exercise) {
-    return _exerciseImages[exercise.toLowerCase()];
+    // First check images
+    String? firstPriorityImage = _exerciseImages[exercise.toLowerCase()];
+    if (firstPriorityImage != null) {
+      return firstPriorityImage;
+    }
+
+    // Second, check whether it is in one of our types
+    bool isArm = _armExercises.contains(exercise);
+    if (isArm) {
+      // TODO: Replace with generic image of arm
+      return null;
+    }
+
+    bool isLeg = _legExercises.contains(exercise);
+    if (isLeg) {
+      // TODO: Replace with generic image of leg
+      return null;
+    }
+
+    // Second, check whether it is in one of our types
+    bool isCore = _coreExercises.contains(exercise);
+    if (isCore) {
+      // TODO: Replace with generic image of core
+      return null;
+    }
+
+    bool isYoga = _legExercises.contains(exercise);
+    if (isYoga) {
+      // TODO: Replace with generic image of yoga
+      return null;
+    }
+
+    return null;
   }
 
   List<String> getExercises(String name, Set<ExerciseType> type) {
     List<String> resultList = [];
     if (type.contains(ExerciseType.Core)) {
-      resultList.addAll(coreExercises);
+      resultList.addAll(_coreExercises);
     }
     if (type.contains(ExerciseType.Leg)) {
-      resultList.addAll(legExercises);
+      resultList.addAll(_legExercises);
     }
     if (type.contains(ExerciseType.Arm)) {
-      resultList.addAll(armExercises);
+      resultList.addAll(_armExercises);
     }
     if (type.contains(ExerciseType.Yoga)) {
-      resultList.addAll(yogaExercises);
+      resultList.addAll(_yogaExercises);
     }
 
     return resultList
         .where((element) =>
             name.toLowerCase().allMatches(element.toLowerCase()).isNotEmpty)
         .toList();
+  }
+
+  List<String> getCommonExercises() {
+    return _commonExercises;
   }
 }

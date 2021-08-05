@@ -18,16 +18,22 @@ class ExerciseListView extends StatelessWidget {
       state.categories,
     );
     exercises.sort();
+    List<String> allExercises = [
+      ...ExerciseMaster.instance.getCommonExercises(),
+      ...exercises
+    ];
     return ListView.separated(
       padding: const EdgeInsets.all(0.0),
       separatorBuilder: (context, index) {
         return Divider();
       },
-      itemCount: exercises.length,
+      itemCount: allExercises.length,
       itemBuilder: (context, index) {
         return GestureDetector(
           onTap: () {
-            context.read<ExerciseSelectorCubit>().updateName(exercises[index]);
+            context
+                .read<ExerciseSelectorCubit>()
+                .updateName(allExercises[index]);
             onSave(context);
           },
           child: Padding(
@@ -36,7 +42,7 @@ class ExerciseListView extends StatelessWidget {
               vertical: 8.0,
             ),
             child: Text(
-              exercises[index],
+              allExercises[index],
               style: AppTextStyles.body.getStyleFor(
                 5,
               ),

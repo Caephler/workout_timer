@@ -17,7 +17,8 @@ samples, guidance on mobile development, and a full API reference.
 
 # TODO
 
-- Common Workout DB
+- DONE: Common Workout DB
+- Common Workout DB images
 - Maybe Number input for duration?
 - Undo for delete workout seqs/blocks
 - Rename loops -> sets

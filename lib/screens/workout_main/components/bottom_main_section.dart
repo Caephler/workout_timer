@@ -43,10 +43,12 @@ class BottomMainSection extends StatelessWidget {
                     block.type == WorkoutType.Time
                         ? _formatTimeLeftDuration(state.duration)
                         : '${block.reps} reps',
-                    style: AppTextStyles.display.getStyleFor(
-                      0,
-                      color: Colors.blue[900],
-                    ),
+                    style: AppTextStyles.display
+                        .getStyleFor(
+                          0,
+                          color: Colors.blue[900],
+                        )
+                        .copyWith(letterSpacing: -5, fontSize: 88),
                   );
                 },
               );
@@ -62,9 +64,26 @@ class BottomMainSection extends StatelessWidget {
           ),
           SizedBox(height: 32.0),
           Text(
+            'Next Workout',
+            style: AppTextStyles.body.getStyleFor(5).copyWith(
+                  color: Colors.black45,
+                ),
+          ),
+          BlocBuilder<WorkoutProgressCubit, WorkoutProgressState>(
+              builder: (context, state) {
+            return Text(
+              state.nextWorkoutBlock?.name ?? 'No more!',
+              style: AppTextStyles.body.getStyleFor(
+                4,
+                color: Colors.black54,
+              ),
+            );
+          }),
+          SizedBox(height: 16.0),
+          Text(
             'Time Elapsed',
             style: AppTextStyles.body.getStyleFor(5).copyWith(
-                  color: Colors.black54,
+                  color: Colors.black45,
                 ),
           ),
           BlocBuilder<CountUpBloc, CountUpState>(
@@ -72,7 +91,7 @@ class BottomMainSection extends StatelessWidget {
               return Text(
                 formatWorkoutDuration(state.duration),
                 style: AppTextStyles.body.getStyleFor(4).copyWith(
-                      color: Colors.black87,
+                      color: Colors.black54,
                     ),
               );
             },

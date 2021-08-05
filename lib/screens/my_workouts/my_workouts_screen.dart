@@ -5,6 +5,7 @@ import 'package:workout_timer/common/colors.dart';
 import 'package:workout_timer/common/dialog/confirm_dialog.dart';
 import 'package:workout_timer/common/extensions.dart';
 import 'package:workout_timer/common/inkwell_button.dart';
+import 'package:workout_timer/common/snackbar.dart';
 import 'package:workout_timer/common/storage/provider.dart';
 import 'package:workout_timer/common/storage/shared_prefs.dart';
 import 'package:workout_timer/common/storage/storage.dart';
@@ -53,24 +54,6 @@ class _MyWorkoutsScreenContent extends StatefulWidget {
 }
 
 class _MyWorkoutsScreenContentState extends State<_MyWorkoutsScreenContent> {
-  @override
-  void initState() {
-    SharedPreferencesService.instance
-        .getWakelockSetting()
-        .then((needsWakelock) {
-      if (needsWakelock) {
-        Wakelock.enable();
-      }
-    });
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    Wakelock.disable();
-    super.dispose();
-  }
-
   void _onStartWorkout(BuildContext context, Workout workout) {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return WorkoutMainScreen(workout: workout);
@@ -88,7 +71,11 @@ class _MyWorkoutsScreenContentState extends State<_MyWorkoutsScreenContent> {
     List<Workout> updatedWorkouts =
         workouts.copyInsertAt(workouts.length, workouts[index].duplicate());
     StorageService.instance.setWorkouts(updatedWorkouts);
-    _getCubit().setWorkouts(updatedWorkouts);
+    cubit.setWorkouts(updatedWorkouts);
+    showUndoSnackbar(context, 'Duplicated Workout: ${workout.name}', () {
+      StorageService.instance.setWorkouts(workouts);
+      cubit.setWorkouts(workouts);
+    });
   }
 
   Future<void> _onEditWorkout(
@@ -118,17 +105,15 @@ class _MyWorkoutsScreenContentState extends State<_MyWorkoutsScreenContent> {
   Future<void> _onDeleteWorkout(BuildContext context, int index) async {
     MyWorkoutsCubit cubit = _getCubit();
     List<Workout> workouts = cubit.state.workouts;
-    showConfirmDialog(
-      context,
-      onOk: () {
-        List<Workout> updatedWorkouts = workouts.copyRemoveAt(index);
-        StorageService.instance.setWorkouts(updatedWorkouts);
-        _getCubit().setWorkouts(updatedWorkouts);
-      },
-      title: 'Confirm Delete',
-      description: 'Once deleted, this item will be gone forever. Continue?',
-      okType: ButtonType.danger,
-    );
+    Workout workout = workouts[index];
+
+    List<Workout> updatedWorkouts = workouts.copyRemoveAt(index);
+    StorageService.instance.setWorkouts(updatedWorkouts);
+    cubit.setWorkouts(updatedWorkouts);
+    showUndoSnackbar(context, 'Deleted Workout: ${workout.name}', () {
+      cubit.setWorkouts(workouts);
+      StorageService.instance.setWorkouts(workouts);
+    });
   }
 
   void _onAddWorkout(BuildContext context) {

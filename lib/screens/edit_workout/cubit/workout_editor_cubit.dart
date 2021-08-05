@@ -24,8 +24,12 @@ class WorkoutEditorCubit extends Cubit<WorkoutEditorState> {
     );
   }
 
+  void replaceState(WorkoutEditorState state) {
+    emit(state);
+  }
+
   /// Add a WorkoutSequence at the specified index.
-  void addSequenceAt(int index, {int repeatTimes = 1}) {
+  void addSequenceAt(int index, WorkoutSequence sequence) {
     emit(
       WorkoutEditorState(
         isDirty: true,
@@ -33,16 +37,7 @@ class WorkoutEditorCubit extends Cubit<WorkoutEditorState> {
         workout: state.workout.copyWith(
           sequences: state.workout.sequences.copyInsertAt(
             index,
-            WorkoutSequence(
-              repeatTimes: repeatTimes,
-              blocks: [
-                WorkoutBlock(
-                  name: 'Workout',
-                  type: WorkoutType.Time,
-                  duration: Duration(seconds: 60),
-                ),
-              ],
-            ),
+            sequence,
           ),
         ),
       ),

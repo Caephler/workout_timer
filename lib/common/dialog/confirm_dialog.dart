@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:workout_timer/common/button.dart';
+import 'package:workout_timer/common/text.dart';
 
 Widget _getButtonWith({
   required Widget child,
@@ -39,7 +40,9 @@ Future<bool?> showConfirmDialog(
     context: context,
     barrierDismissible: false,
     builder: (context) => new AlertDialog(
-      title: Text(title),
+      title: Text(title,
+          style:
+              AppTextStyles.display.getStyleFor(4, weight: TextWeight.Medium)),
       content: Text(description),
       actionsPadding:
           const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 12.0),

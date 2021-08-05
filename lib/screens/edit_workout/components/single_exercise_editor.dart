@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:workout_timer/common/dialog/input_dialog.dart';
 import 'package:workout_timer/common/dialog/workout_counter_dialog.dart';
 import 'package:workout_timer/common/format.dart';
 import 'package:workout_timer/common/inkwell_button.dart';
 import 'package:workout_timer/common/optional.dart';
+import 'package:workout_timer/common/snackbar.dart';
 import 'package:workout_timer/common/text.dart';
 import 'package:workout_timer/common/validators.dart';
 import 'package:workout_timer/common/workouts.dart';
@@ -17,6 +17,7 @@ class SingleExerciseEditor extends StatefulWidget {
     required this.isEditing,
     required this.updateBlock,
     this.removeBlock,
+    this.undoRemoveBlock,
     this.color = Colors.white,
     this.hasDrag = false,
     this.index = 0,
@@ -26,6 +27,7 @@ class SingleExerciseEditor extends StatefulWidget {
   final bool isEditing;
   final void Function(WorkoutBlock block) updateBlock;
   final VoidCallback? removeBlock;
+  final VoidCallback? undoRemoveBlock;
   final Color color;
   final bool hasDrag;
   final int index;
@@ -178,6 +180,19 @@ class _SingleExerciseEditorState extends State<SingleExerciseEditor>
         ),
         onDismissed: (direction) {
           widget.removeBlock?.call();
+          if (widget.undoRemoveBlock != null) {
+            showUndoSnackbar(
+              context,
+              'Deleted exercise: ${widget.block.name}',
+              () {
+                try {
+                  widget.undoRemoveBlock?.call();
+                } catch (e) {
+                  showMessageSnackbar(context, 'Could not delete block');
+                }
+              },
+            );
+          }
         },
         child: SizedBox(
           height: 48.0,

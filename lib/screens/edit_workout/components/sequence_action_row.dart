@@ -23,7 +23,7 @@ class SequenceActionRow extends StatelessWidget {
         TextButton.icon(
           onPressed: insertLoop,
           icon: Icon(LineIcons.infinity),
-          label: Text('Add Loop'),
+          label: Text('Add Set'),
         ),
       ],
     );

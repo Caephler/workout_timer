@@ -177,12 +177,25 @@ class WorkoutScreenContent extends StatelessWidget {
                                 insertExercise: () {
                                   context
                                       .read<WorkoutEditorCubit>()
-                                      .addSequenceAt(0);
+                                      .addSequenceAt(
+                                        0,
+                                        WorkoutSequence.only(
+                                          WorkoutBlock.simple(),
+                                        ),
+                                      );
                                 },
                                 insertLoop: () {
                                   context
                                       .read<WorkoutEditorCubit>()
-                                      .addSequenceAt(0, repeatTimes: 2);
+                                      .addSequenceAt(
+                                        0,
+                                        WorkoutSequence(
+                                          blocks: [
+                                            WorkoutBlock.simple(),
+                                          ],
+                                          repeatTimes: 2,
+                                        ),
+                                      );
                                 },
                               )
                             ],
@@ -221,48 +234,6 @@ class WorkoutScreenContent extends StatelessWidget {
                             key: ObjectKey(sequence.id),
                             sequence: sequence,
                             index: index,
-                            isActivated: state.activatedSequenceIndex == index,
-                            onUpdateSequence: ({required sequence}) {
-                              context
-                                  .read<WorkoutEditorCubit>()
-                                  .updateSequenceAt(index, sequence);
-                            },
-                            onUpdateBlock: ({
-                              required WorkoutBlock block,
-                              required int blockIndex,
-                            }) {
-                              context.read<WorkoutEditorCubit>().updateBlockAt(
-                                    sequenceIndex: index,
-                                    blockIndex: blockIndex,
-                                    block: block,
-                                  );
-                            },
-                            removeBlockAt: (blockIndex) {
-                              context.read<WorkoutEditorCubit>().removeBlockAt(
-                                    sequenceIndex: index,
-                                    blockIndex: blockIndex,
-                                  );
-                            },
-                            removeSelf: () {
-                              context
-                                  .read<WorkoutEditorCubit>()
-                                  .removeSequenceAt(index);
-                            },
-                            onActivate: () {
-                              context
-                                  .read<WorkoutEditorCubit>()
-                                  .activateSequence(index);
-                            },
-                            insertExerciseAfter: () {
-                              context
-                                  .read<WorkoutEditorCubit>()
-                                  .addSequenceAt(index + 1);
-                            },
-                            insertLoopAfter: () {
-                              context
-                                  .read<WorkoutEditorCubit>()
-                                  .addSequenceAt(index + 1, repeatTimes: 2);
-                            },
                           );
                         },
                       ),

@@ -21,6 +21,8 @@ Future<void> showChoiceDialog(
         children: actions
             .map(
               (action) => SimpleDialogOption(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 16.0, horizontal: 24.0),
                 onPressed: () {
                   Navigator.pop(context);
                   action.callback();

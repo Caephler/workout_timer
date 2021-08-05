@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:workout_timer/common/button.dart';
+import 'package:workout_timer/common/text.dart';
 import 'package:workout_timer/common/validators.dart';
 
 Future<void> showDialogOf<T>(
@@ -56,7 +57,9 @@ class _GenericDialog<T> extends SimpleDialog {
     String okLabel = 'OK',
     String cancelLabel = 'Cancel',
   }) : super(
-          title: Text(title),
+          title: Text(title,
+              style: AppTextStyles.display
+                  .getStyleFor(4, weight: TextWeight.Medium)),
           children: [
             _GenericDialogContent(
               defaultValue: defaultValue,

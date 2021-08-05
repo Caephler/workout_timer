@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:workout_timer/common/muted_label.dart';
 import 'package:workout_timer/common/text.dart';
 import 'package:workout_timer/screens/exercise_selector/components/category_selector.dart';
@@ -45,6 +46,15 @@ class _ExerciseSearchBarState extends State<ExerciseSearchBar> {
                     onChanged: (value) {
                       context.read<ExerciseSelectorCubit>().updateName(value);
                     },
+                    decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          _controller.clear();
+                          context.read<ExerciseSelectorCubit>().updateName('');
+                        },
+                        icon: Icon(LineIcons.times),
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(width: 16.0),

@@ -23,10 +23,12 @@ class TopMainSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 300,
       color: AppColors.background,
       padding: const EdgeInsets.all(16.0),
       child: SafeArea(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
             BlocBuilder<WorkoutProgressCubit, WorkoutProgressState>(
               builder: (context, state) {
@@ -38,18 +40,13 @@ class TopMainSection extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppTextStyles.display.getStyleFor(
-                      5,
+                      4,
                       color: Colors.black45,
                     ),
                   ),
                 );
               },
             ),
-            SizedBox(
-              height: 300,
-              child: Image.asset('images/yoga.png'),
-            ),
-            SizedBox(height: 16.0),
             BlocBuilder<WorkoutProgressCubit, WorkoutProgressState>(
               builder: (context, state) {
                 return Text(
