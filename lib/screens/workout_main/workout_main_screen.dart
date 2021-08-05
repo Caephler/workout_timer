@@ -61,7 +61,7 @@ class _WorkoutMainScreenContentState extends State<WorkoutMainScreenContent> {
   void initState() {
     super.initState();
 
-    AdService.instance.preloadRewardedAd();
+    AdService.instance.preloadInterstitialAd();
 
     TimerBloc timer = context.read<TimerBloc>();
     WorkoutProgressCubit workoutProgress = context.read<WorkoutProgressCubit>();
@@ -130,7 +130,7 @@ class _WorkoutMainScreenContentState extends State<WorkoutMainScreenContent> {
   }
 
   Future<void> transitionToFinishScreen() async {
-    await AdService.instance.showRewardedAd();
+    await AdService.instance.showInterstitialAd();
     WorkoutProgressCubit cubit = context.read<WorkoutProgressCubit>();
     CountUpBloc countUp = context.read<CountUpBloc>();
     Navigator.pushReplacement(

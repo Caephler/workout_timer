@@ -8,6 +8,7 @@ import 'package:workout_timer/common/optional.dart';
 import 'package:workout_timer/common/text.dart';
 import 'package:workout_timer/common/validators.dart';
 import 'package:workout_timer/common/workouts.dart';
+import 'package:workout_timer/screens/exercise_selector/exercise_selector_screen.dart';
 
 class SingleExerciseEditor extends StatefulWidget {
   const SingleExerciseEditor({
@@ -95,20 +96,21 @@ class _SingleExerciseEditorState extends State<SingleExerciseEditor>
           Expanded(
             child: InkwellButton(
               hasBorder: true,
-              onTap: () {
-                showInputDialog(
-                  context,
-                  title: 'Exercise Name',
-                  defaultValue: widget.block.name,
-                  onOk: (newValue) {
-                    widget.updateBlock(
-                      widget.block.copyWith(name: newValue),
-                    );
-                  },
-                  validators: [
-                    createLengthValidator(1, 40,
-                        'Exercise name must be between 1 and 40 characters.'),
-                  ],
+              onTap: () async {
+                String? name = await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) {
+                      return ExerciseSelectorScreen(block: widget.block);
+                    },
+                  ),
+                );
+
+                if (name == null) {
+                  return;
+                }
+
+                widget.updateBlock(
+                  widget.block.copyWith(name: name),
                 );
               },
               child: Text(

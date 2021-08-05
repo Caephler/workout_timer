@@ -140,50 +140,53 @@ class WorkoutScreenContent extends StatelessWidget {
                 child: BlocBuilder<WorkoutEditorCubit, WorkoutEditorState>(
                   builder: (context, state) {
                     if (state.workout.sequences.isEmpty) {
-                      return Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24.0,
-                          vertical: 16.0,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(
-                              LineIcons.box,
-                              size: 100,
-                              color: Colors.blue,
-                            ),
-                            SizedBox(height: 16.0),
-                            Text(
-                              'No exercises in this workout routine yet. Why not select a preset to work from?',
-                              textAlign: TextAlign.center,
-                              style: AppTextStyles.body
-                                  .getStyleFor(5, color: Colors.black45),
-                            ),
-                            ElevatedButton(
-                                onPressed: () => _selectPreset(context),
-                                child: Text('Select Preset',
-                                    style: AppTextStyles.body.getStyleFor(5))),
-                            SizedBox(height: 16.0),
-                            Text(
-                              'Or you can create your own from scratch:',
-                              textAlign: TextAlign.center,
-                              style: AppTextStyles.body
-                                  .getStyleFor(5, color: Colors.black45),
-                            ),
-                            SequenceActionRow(
-                              insertExercise: () {
-                                context
-                                    .read<WorkoutEditorCubit>()
-                                    .addSequenceAt(0);
-                              },
-                              insertLoop: () {
-                                context
-                                    .read<WorkoutEditorCubit>()
-                                    .addSequenceAt(0, repeatTimes: 2);
-                              },
-                            )
-                          ],
+                      return SingleChildScrollView(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24.0,
+                            vertical: 16.0,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(
+                                LineIcons.box,
+                                size: 100,
+                                color: Colors.blue,
+                              ),
+                              SizedBox(height: 16.0),
+                              Text(
+                                'No exercises in this workout routine yet. Why not select a preset to work from?',
+                                textAlign: TextAlign.center,
+                                style: AppTextStyles.body
+                                    .getStyleFor(5, color: Colors.black45),
+                              ),
+                              ElevatedButton(
+                                  onPressed: () => _selectPreset(context),
+                                  child: Text('Select Preset',
+                                      style:
+                                          AppTextStyles.body.getStyleFor(5))),
+                              SizedBox(height: 16.0),
+                              Text(
+                                'Or you can create your own from scratch:',
+                                textAlign: TextAlign.center,
+                                style: AppTextStyles.body
+                                    .getStyleFor(5, color: Colors.black45),
+                              ),
+                              SequenceActionRow(
+                                insertExercise: () {
+                                  context
+                                      .read<WorkoutEditorCubit>()
+                                      .addSequenceAt(0);
+                                },
+                                insertLoop: () {
+                                  context
+                                      .read<WorkoutEditorCubit>()
+                                      .addSequenceAt(0, repeatTimes: 2);
+                                },
+                              )
+                            ],
+                          ),
                         ),
                       );
                     }

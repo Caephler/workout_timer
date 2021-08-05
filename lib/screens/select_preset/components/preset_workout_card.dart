@@ -69,11 +69,8 @@ class PresetWorkoutCard extends StatelessWidget {
                   onPressed: () {
                     onSelect();
                   },
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    minimumSize: Size(36, 36),
-                  ),
-                  child: Icon(Icons.play_arrow),
+                  child:
+                      Text('Select', style: AppTextStyles.body.getStyleFor(5)),
                 )
               ],
             ),

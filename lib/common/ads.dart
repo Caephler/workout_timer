@@ -6,9 +6,9 @@ class AdService {
 
   static AdService instance = AdService._();
 
-  RewardedAd? _ad;
+  InterstitialAd? _ad;
 
-  Future<void> preloadRewardedAd() async {
+  Future<void> preloadInterstitialAd() async {
     /// If ad already loaded, skip
     if (_ad != null) {
       return;
@@ -19,10 +19,10 @@ class AdService {
       return;
     }
 
-    return RewardedAd.load(
-      adUnitId: RewardedAd.testAdUnitId,
+    return InterstitialAd.load(
+      adUnitId: 'ca-app-pub-8550524896014811/2306798944',
       request: AdRequest(),
-      rewardedAdLoadCallback: RewardedAdLoadCallback(
+      adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
           _ad = ad;
         },
@@ -33,19 +33,19 @@ class AdService {
     );
   }
 
-  Future<void> showRewardedAd() async {
+  Future<void> showInterstitialAd() async {
     if (await SharedPreferencesService.instance.getHasBoughtAdRemoval()) {
       return;
     }
 
     if (_ad != null) {
-      await _ad?.show(onUserEarnedReward: (ad, item) {});
+      await _ad?.show();
       _ad = null;
       return;
     }
 
-    await preloadRewardedAd();
-    await _ad?.show(onUserEarnedReward: (ad, item) {});
+    await preloadInterstitialAd();
+    await _ad?.show();
     _ad = null;
     return;
   }

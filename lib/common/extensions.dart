@@ -23,7 +23,28 @@ extension ExtendedIterable<E> on Iterable<E> {
   }
 }
 
+extension ExtendedSet<E> on Set<E> {
+  Set<E> copyInsert(E element) {
+    Set<E> newSet = Set.from(this);
+    newSet.add(element);
+    return newSet;
+  }
+
+  Set<E> copyRemove(E element) {
+    Set<E> newSet = Set.from(this);
+    newSet.remove(element);
+    return newSet;
+  }
+}
+
 extension ExtendedList<E> on List<E> {
+  /// Returns a sorted copy
+  List<E> copySort([Comparator<E>? comparator]) {
+    List<E> lst = [...this];
+    lst.sort(comparator);
+    return lst;
+  }
+
   /// Makes a copy and inserts element at index
   List<E> copyInsertAt(int index, E element) {
     return [
