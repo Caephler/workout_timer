@@ -20,6 +20,6 @@ samples, guidance on mobile development, and a full API reference.
 - DONE: Common Workout DB
 - Common Workout DB images
 - Maybe Number input for duration?
-- Undo for delete workout seqs/blocks
-- Rename loops -> sets
-- Have a way to add rest quickly
+- Done: Undo for delete workout seqs/blocks
+- Done: Rename loops -> sets
+- Done: Have a way to add rest quickly

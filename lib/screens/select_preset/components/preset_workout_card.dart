@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:workout_timer/common/format.dart';
+import 'package:workout_timer/common/preset_workouts.dart';
 import 'package:workout_timer/common/text.dart';
 import 'package:workout_timer/common/workouts.dart';
 
@@ -9,13 +10,13 @@ import 'preset_workout_preview.dart';
 class PresetWorkoutCard extends StatelessWidget {
   const PresetWorkoutCard({
     Key? key,
-    required this.workout,
+    required this.presetWorkout,
     required this.onSelect,
     required this.isExpanded,
     required this.onExpand,
   }) : super(key: key);
 
-  final Workout workout;
+  final PresetWorkout presetWorkout;
   final VoidCallback onSelect;
   final bool isExpanded;
   final void Function(bool) onExpand;
@@ -43,7 +44,7 @@ class PresetWorkoutCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        workout.name,
+                        presetWorkout.workout.name,
                         style: AppTextStyles.display.getStyleFor(4).copyWith(
                               color: Colors.blue,
                             ),
@@ -54,7 +55,8 @@ class PresetWorkoutCard extends StatelessWidget {
                         children: [
                           Icon(LineIcons.hourglassHalf, color: Colors.black45),
                           Text(
-                            formatWorkoutDuration(workout.totalDuration),
+                            formatWorkoutDuration(
+                                presetWorkout.workout.totalDuration),
                             style: AppTextStyles.body.getStyleFor(5).copyWith(
                                   color: Colors.black54,
                                 ),
@@ -75,8 +77,15 @@ class PresetWorkoutCard extends StatelessWidget {
               ],
             ),
             SizedBox(height: 16.0),
+            Text(
+              presetWorkout.description,
+              style: AppTextStyles.body.getStyleFor(
+                5,
+                color: Colors.black54,
+              ),
+            ),
             WorkoutPreview(
-              workout: workout,
+              workout: presetWorkout.workout,
               isExpanded: isExpanded,
               onExpand: onExpand,
             ),

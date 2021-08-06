@@ -10,6 +10,7 @@ final Map<ExerciseType, String> _typeMap = {
   ExerciseType.Arm: 'Arm',
   ExerciseType.Leg: 'Leg',
   ExerciseType.Yoga: 'Yoga',
+  ExerciseType.FullBody: 'Full Body',
 };
 
 class ExerciseChip extends StatelessWidget {

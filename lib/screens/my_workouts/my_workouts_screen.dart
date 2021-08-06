@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:workout_timer/common/button.dart';
 import 'package:workout_timer/common/colors.dart';
-import 'package:workout_timer/common/dialog/confirm_dialog.dart';
 import 'package:workout_timer/common/extensions.dart';
 import 'package:workout_timer/common/inkwell_button.dart';
 import 'package:workout_timer/common/snackbar.dart';
 import 'package:workout_timer/common/storage/provider.dart';
-import 'package:workout_timer/common/storage/shared_prefs.dart';
 import 'package:workout_timer/common/storage/storage.dart';
 import 'package:workout_timer/common/text.dart';
 import 'package:workout_timer/common/workouts.dart';
@@ -18,8 +16,6 @@ import 'package:workout_timer/screens/my_workouts/components/workouts_list.dart'
 import 'package:workout_timer/screens/my_workouts/cubit/my_workouts_cubit.dart';
 import 'package:workout_timer/screens/settings/settings_screen.dart';
 import 'package:workout_timer/screens/workout_main/workout_main_screen.dart';
-
-import 'package:wakelock/wakelock.dart';
 
 class MyWorkoutsScreen extends StatelessWidget {
   const MyWorkoutsScreen({Key? key}) : super(key: key);

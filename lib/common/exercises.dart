@@ -3,6 +3,7 @@ enum ExerciseType {
   Leg,
   Arm,
   Yoga,
+  FullBody,
 }
 
 class ExerciseMaster {
@@ -14,6 +15,20 @@ class ExerciseMaster {
     'Rest',
   ];
 
+  final Set<String> _fullBodyExercises = {
+    'Bounds',
+    'Box Jumps',
+    'Burpee',
+    'Crab Crawl',
+    'Frogger',
+    'High Knees',
+    'Jump Rope',
+    'Jumping Jacks',
+    'Mountain Climbers',
+    'Star Jump',
+    'Twisted Mountain Climber'
+  };
+
   final Set<String> _coreExercises = {
     'Plank',
     'Plank Jacks',
@@ -23,8 +38,11 @@ class ExerciseMaster {
     'Russian Twists',
     'Toe Touches',
     'Heel Taps',
+    'Leg Raises',
+    'Mountain Climbers',
     'Side Plank (L)',
     'Side Plank (R)',
+    'Superman',
   };
 
   final Set<String> _legExercises = {
@@ -35,14 +53,25 @@ class ExerciseMaster {
     'Glute Bridge',
     'Jump Squat',
     'Single Leg Deadlift',
+    'Box Toe Touches',
+    'Butt Kickers',
+    'Calf Raises',
+    'Goblet Squat',
+    'Skaters',
+    'Squat Jump',
+    'Standing Leg Lift',
+    'Quadruped Limb Raises',
   };
 
   final Set<String> _armExercises = {
+    'Bicep Curls',
     'Push Ups',
     'Tricep Dips',
     'Knee Push Ups',
     'Inclined Push Ups',
     'Inchworm',
+    'Chest Press',
+    'Shoulder Press',
   };
 
   final Set<String> _yogaExercises = {
@@ -164,6 +193,9 @@ class ExerciseMaster {
     }
     if (type.contains(ExerciseType.Yoga)) {
       resultList.addAll(_yogaExercises);
+    }
+    if (type.contains(ExerciseType.FullBody)) {
+      resultList.addAll(_fullBodyExercises);
     }
 
     return resultList

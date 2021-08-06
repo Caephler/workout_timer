@@ -56,14 +56,14 @@ class _SelectPresetScreenState extends State<SelectPresetScreen> {
               key: PageStorageKey('preset_list'),
               children: presetWorkouts
                   .map(
-                    (workout) => PresetWorkoutCard(
-                      workout: workout,
+                    (presetWorkout) => PresetWorkoutCard(
+                      presetWorkout: presetWorkout,
                       onSelect: () {
-                        Navigator.of(context).pop(workout);
+                        Navigator.of(context).pop(presetWorkout.workout);
                       },
-                      isExpanded: workout.id == expandedKey,
+                      isExpanded: presetWorkout.workout.id == expandedKey,
                       onExpand: (isExpanded) {
-                        _expandWorkout(workout.id, isExpanded);
+                        _expandWorkout(presetWorkout.workout.id, isExpanded);
                       },
                     ),
                   )

@@ -16,6 +16,7 @@ class ExerciseSelectorCubit extends Cubit<ExerciseSelectorState> {
                 ExerciseType.Arm,
                 ExerciseType.Leg,
                 ExerciseType.Yoga,
+                ExerciseType.FullBody,
               ],
             ),
             error: '',
