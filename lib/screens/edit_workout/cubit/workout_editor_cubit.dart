@@ -82,9 +82,9 @@ class WorkoutEditorCubit extends Cubit<WorkoutEditorState> {
         isDirty: true,
         activatedSequenceIndex: sequenceIndex,
         workout: state.workout.copyWith(
-          sequences: state.workout.sequences.copyInsertAt(
+          sequences: state.workout.sequences.copyUpdateAt(
             sequenceIndex,
-            seq.copyWith(
+            (_) => seq.copyWith(
               blocks: seq.blocks.copyInsertAt(
                 blockIndex,
                 WorkoutBlock.simple(),
